@@ -146,6 +146,7 @@ class PagerViewViewManager : ViewGroupManager<NestedScrollableHost>() {
                 if (canScroll) {
                     val scrollWithAnimation = commandId == COMMAND_SET_PAGE
                     PagerViewViewManagerImpl.setCurrentItem(view, pageIndex, scrollWithAnimation)
+                    eventDispatcher.dispatchEvent(PageSelectedEvent(root.id, pageIndex))
                 }
             }
             COMMAND_SET_SCROLL_ENABLED -> {

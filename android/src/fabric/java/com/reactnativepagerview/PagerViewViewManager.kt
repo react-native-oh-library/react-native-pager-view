@@ -13,7 +13,6 @@ import com.facebook.react.uimanager.*
 import com.facebook.react.uimanager.annotations.ReactProp
 import com.facebook.react.viewmanagers.RNCViewPagerManagerDelegate
 import com.facebook.react.viewmanagers.RNCViewPagerManagerInterface
-import com.facebook.soloader.SoLoader
 import com.reactnativepagerview.event.PageScrollEvent
 import com.reactnativepagerview.event.PageScrollStateChangedEvent
 import com.reactnativepagerview.event.PageSelectedEvent
@@ -21,14 +20,6 @@ import com.reactnativepagerview.event.PageSelectedEvent
 
 @ReactModule(name = PagerViewViewManagerImpl.NAME)
 class PagerViewViewManager : ViewGroupManager<NestedScrollableHost>(), RNCViewPagerManagerInterface<NestedScrollableHost> {
-    companion object {
-        init {
-            if (BuildConfig.CODEGEN_MODULE_REGISTRATION != null) {
-                SoLoader.loadLibrary(BuildConfig.CODEGEN_MODULE_REGISTRATION)
-            }
-        }
-    }
-
     private val mDelegate: ViewManagerDelegate<NestedScrollableHost> = RNCViewPagerManagerDelegate(this)
 
     override fun getDelegate() = mDelegate
@@ -183,6 +174,10 @@ class PagerViewViewManager : ViewGroupManager<NestedScrollableHost>(), RNCViewPa
         val canScroll = childCount != null && childCount > 0 && selectedPage >= 0 && selectedPage < childCount
         if (canScroll) {
             PagerViewViewManagerImpl.setCurrentItem(view, selectedPage, scrollWithAnimation)
+            val reactContext = view.context as ReactContext
+            UIManagerHelper.getEventDispatcherForReactTag(reactContext, view.id)?.dispatchEvent(
+                PageSelectedEvent(view.id, selectedPage)
+            )
         }
     }
 
