@@ -168,6 +168,8 @@ export struct RNCViewPager{
     if (!this.onMoving) {
       this.emitTouchEvent("settling");
     }
+    //使用flag标识区间
+    this.onMoving = true
   }
 
   onAnimationEnd(index:number){
@@ -186,6 +188,9 @@ export struct RNCViewPager{
         offset:0
       }
     );
+    
+    //使用flag标识区间,一个拖动过程end
+    this.onMoving = false;
   }
 
   onTouchEvent(event:TouchEvent){
@@ -240,6 +245,16 @@ export struct RNCViewPager{
       .loop(false)
       .onGestureSwipe((index:number,extraInfo:SwiperAnimationEvent)=>{
         Logger.debug(TAG,`onGestureSwipe,onGestureSwipe:${index},extraInfo:${JSON.stringify(extraInfo)}`)
+        //1216修改，规避起始边缘tab异常场景（双指右滑，选项卡异常）,22是测试观察取的经验值
+        if (index == 0 && Math.abs(extraInfo.currentOffset) < 22) {
+          Logger.debug(TAG,`onGestureSwipe,ignore，limit offset:${index},extraInfo:${JSON.stringify(extraInfo)}`)
+          return
+        }
+         //1216修改，规避起始边缘tab异常场景（双指右滑，选项卡异常）
+        if (!this.onMoving) {
+          Logger.debug(TAG,`onGestureSwipe,ignore，no in gap:${index},extraInfo:${JSON.stringify(extraInfo)}`)
+          return
+        }
         // 规避起始边缘tab异常场景（双指右滑，选项卡异常）
         if (index == 0 && extraInfo.currentOffset == 0) {
           return
