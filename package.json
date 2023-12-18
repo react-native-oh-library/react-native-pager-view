@@ -7,6 +7,9 @@
   "types": "lib/typescript/index.d.ts",
   "react-native": "src/index",
   "source": "src/index",
+  "harmony": {
+    "alias":"react-native-pager-view"
+  },
   "files": [
     "src",
     "lib",
@@ -51,6 +54,9 @@
   "homepage": "https://github.com/callstack/react-native-pager-view#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "react-native-pager-view": "6.2.3"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.18.2",
