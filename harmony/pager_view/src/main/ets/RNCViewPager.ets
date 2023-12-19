@@ -28,12 +28,15 @@ import{
   RNViewBase,
   ComponentBuilderContext,
   RNComponentFactory,
-  Tag
+  Tag,
+  RNOHComponentCommand
 } from 'rnoh'
 import inputMethod from '@ohos.inputMethod';
 import { RNCViewPagerManager } from './RNCViewPagerManager';
+import Logger from './Logger';
 
 export const PAGER_VIEW_TYPE:string = "RNCViewPager"
+const TAG: string = "[RNOH] RNCViewPager"
 
 export interface ViewPagerProps extends ViewBaseProps{
   initialPage:number
@@ -62,14 +65,14 @@ export struct RNCViewPager{
   private defaultDuration: number = 100
   @State pageIndex: number = 0
   @State pageScrollEnabled: boolean = true
+  @State isNativeLock:boolean = false
   @State AnimationDuration: number = this.defaultDuration
   private inputMethodController = inputMethod.getInputMethodController();
   private onMoving: boolean = false
   private componentManager!: RNCViewPagerManager
 
-
   aboutToAppear(){
-    console.info(`[RNOH]: in RNCViewPager,${JSON.stringify(this.descriptor.props)}`)
+    Logger.info(TAG,`props:${JSON.stringify(this.descriptor.props)}`)
 
     this.descriptor = this.ctx.descriptorRegistry.getDescriptor<ViewPagerDescriptor>(this.tag)
     this.unregisterDescriptorChangesListener = this.ctx.descriptorRegistry.subscribeToDescriptorChanges(this.tag,
@@ -82,17 +85,21 @@ export struct RNCViewPager{
     this.cleanupCommandCallback = this.ctx.commandDispatcher.registerCommandCallback(
       this.tag,
       (command,args:(boolean|number)[]) => {
-        console.log(`[RNOH]: CommandCallback,command: ${command}`)
+        Logger.info(TAG,`CommandCallback,command: ${command}`)
         if(command === 'setPage'){
-          console.log(`[RNOH]: setPage,selectedPage: ${args[0]}`)
+          Logger.info(TAG,`setPage,selectedPage: ${args[0]}`)
           this.pageIndex = args[0] as number
         }else if(command === 'setPageWithoutAnimation'){
-          console.log(`[RNOH]: setPageWithoutAnimation,selectedPage: ${args[0]}`)
+          Logger.info(TAG,`setPageWithoutAnimation,selectedPage: ${args[0]}`)
           this.AnimationDuration = 0
           this.pageIndex = args[0] as number
         }else if(command === 'setScrollEnabledImperatively'){
-          console.log(`[RNOH]: setScrollEnabledImperatively,scrollEnabled: ${args[0]}`)
+          Logger.info(TAG,`setScrollEnabledImperatively,scrollEnabled: ${args[0]}`)
           this.pageScrollEnabled = Boolean(args[0])
+        } else if (command === RNOHComponentCommand.BLOCK_NATIVE_RESPONDER) {
+          this.isNativeLock = true
+        } else if (command === RNOHComponentCommand.UNBLOCK_NATIVE_RESPONDER) {
+          this.isNativeLock = false
         }
       });
 
@@ -121,7 +128,7 @@ export struct RNCViewPager{
   onChange(index:number){
     this.pageIndex = index;
     this.componentManager.setPage(this.pageIndex)
-    console.log(`RNOH in PagerView onChange,${JSON.stringify({
+    Logger.info(TAG,`onChange,${JSON.stringify({
       type:"selected",
       pageIndex:index
     })}`)
@@ -146,30 +153,31 @@ export struct RNCViewPager{
   }
 
   onAnimationStart(index:number){
-    console.log(`[RNOH]: onAnimationStart,index number:${index}`)
+    Logger.info(TAG,`onAnimationStart,index number:${index}`)
     if (this.descriptor.props.keyboardDismissMode == "on-drag") {
       this.inputMethodController.stopInput().then((result) => {
         if (result) {
-          console.info('Success to stopInput.(promise)');
+          Logger.info(TAG,'Success to stopInput.(promise)');
         } else {
-          console.error('Failed to stopInput.(promise)');
+          Logger.info(TAG,'Failed to stopInput.(promise)');
         }
       }).catch((err:string | Error) => {
-        console.error('stopInput promise err:' + err);
+        Logger.error(TAG,'stopInput promise err:' + JSON.stringify(err));
       })
     }
     if (!this.onMoving) {
       this.emitTouchEvent("settling");
     }
+    //使用flag标识区间
+    this.onMoving = true
   }
 
   onAnimationEnd(index:number){
-    console.log(`[RNOH]: onAnimationEnd,index number:${index}`)
+    Logger.info(TAG,`onAnimationEnd,index number:${index}`)
     if (!this.onMoving) {
       this.emitTouchEvent("idle");
     }
     this.AnimationDuration = this.defaultDuration
-
 
     this.ctx.rnInstanceManager.emitComponentEvent(
       this.descriptor.tag,
@@ -180,10 +188,13 @@ export struct RNCViewPager{
         offset:0
       }
     );
+    
+    //使用flag标识区间,一个拖动过程end
+    this.onMoving = false;
   }
 
   onTouchEvent(event:TouchEvent){
-    console.log(`[RNOH]: onTouch,touch evet type:${event.type}`)
+    Logger.info(TAG,`onTouch,touch evet type:${event.type}`)
     if (event.type === TouchType.Move) {
       if (!this.onMoving) {
         this.emitTouchEvent("dragging");
@@ -225,7 +236,7 @@ export struct RNCViewPager{
       .direction(this.descriptor.props.layoutDirection == "ltr" ? Direction.Ltr : Direction.Rtl)
       .itemSpace(this.descriptor.props.pageMargin)
       .cachedCount(this.descriptor.props.offscreenPageLimit)
-      .disableSwipe(!this.pageScrollEnabled)
+      .disableSwipe(!this.pageScrollEnabled || this.isNativeLock)
       .effectMode(this.getEffectMode())
       .onChange((index:number)=>this.onChange(index))
       .onAnimationStart((index:number)=>this.onAnimationStart(index))
@@ -233,15 +244,29 @@ export struct RNCViewPager{
       .duration(this.AnimationDuration)
       .loop(false)
       .onGestureSwipe((index:number,extraInfo:SwiperAnimationEvent)=>{
-        // console.log(`[RNOH]:onGestureSwipe,onGestureSwipe:${index},extraInfo:${extraInfo.currentOffset}`)
+        Logger.debug(TAG,`onGestureSwipe,onGestureSwipe:${index},extraInfo:${JSON.stringify(extraInfo)}`)
+        //1216修改，规避起始边缘tab异常场景（双指右滑，选项卡异常）,22是测试观察取的经验值
+        if (index == 0 && Math.abs(extraInfo.currentOffset) < 22) {
+          Logger.debug(TAG,`onGestureSwipe,ignore，limit offset:${index},extraInfo:${JSON.stringify(extraInfo)}`)
+          return
+        }
+         //1216修改，规避起始边缘tab异常场景（双指右滑，选项卡异常）
+        if (!this.onMoving) {
+          Logger.debug(TAG,`onGestureSwipe,ignore，no in gap:${index},extraInfo:${JSON.stringify(extraInfo)}`)
+          return
+        }
+        // 规避起始边缘tab异常场景（双指右滑，选项卡异常）
+        if (index == 0 && extraInfo.currentOffset == 0) {
+          return
+        }
         this.emitTouchEvent("dragging");
+
         let offset = 0;
         let finalIndex = index;
         if (extraInfo.currentOffset < 0) {
           offset = Math.abs(extraInfo.currentOffset/this.descriptor.layoutMetrics.frame.size.width)
         } else {
           finalIndex = (index - 1) > 0 ? (index - 1) : 0
-          // console.log(`[RNOH]:onGestureSwipe,for scroll right,finalIndex:${finalIndex},index = ${index}`)
           offset = 1 - Math.abs(extraInfo.currentOffset/this.descriptor.layoutMetrics.frame.size.width)
         }
 
