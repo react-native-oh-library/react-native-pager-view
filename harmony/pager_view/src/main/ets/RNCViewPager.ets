@@ -140,7 +140,7 @@ export struct RNCViewPager{
     this.unregisterDescriptorChangesListener = this.ctx.descriptorRegistry.subscribeToDescriptorChanges(this.tag,
       (newDescriptor)=>{
         this.descriptor = (newDescriptor as ViewPagerDescriptor)
-        setDescriptor(newDescriptor)
+        this.setDescriptor(newDescriptor)
       }
     )
   }

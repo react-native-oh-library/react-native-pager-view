@@ -33,6 +33,7 @@ import {
     OverflowMode,
     resolveBorderMetrics,
     RNOHContext,
+   TransformMatrix,
     ViewDescriptorWrapper
 } from 'rnoh'
 
@@ -42,7 +43,7 @@ import {ViewPagerDescriptorWrapper, ViewPagerDescriptor} from './RNCViewPager'
  export class ViewModifier implements AttributeModifier<SwiperAttribute>{
     private constructor(){}
     private static instance:ViewModifier;
-    protected descriptorWrapper:ViewPagerDescriptorWrapper | undifined = undifined
+    protected descriptorWrapper:ViewPagerDescriptorWrapper | undefined = undefined
 
     public static getInstance():ViewModifier{
         if(!ViewModifier.instance){
@@ -51,8 +52,7 @@ import {ViewPagerDescriptorWrapper, ViewPagerDescriptor} from './RNCViewPager'
         return ViewModifier.instance;
     }
 
-
-    setDescriptor(descriptorWrapper:ViewPagerDescriptorWrapper |undifined ):ViewModifier{
+    setDescriptor(descriptorWrapper:ViewPagerDescriptorWrapper | undefined ):ViewModifier{
         this.descriptorWrapper = descriptorWrapper;
         return ViewModifier.instance;
     }
@@ -141,5 +141,5 @@ import {ViewPagerDescriptorWrapper, ViewPagerDescriptor} from './RNCViewPager'
   }
 
 
-  }
+
  }
