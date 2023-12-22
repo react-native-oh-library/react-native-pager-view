@@ -33,7 +33,7 @@ import {
     OverflowMode,
     resolveBorderMetrics,
     RNOHContext,
-   TransformMatrix,
+    TransformMatrix,
     ViewDescriptorWrapper
 } from 'rnoh'
 
@@ -118,9 +118,9 @@ import {ViewPagerDescriptorWrapper, ViewPagerDescriptor} from './RNCViewPager'
     if(this.descriptorWrapper?.opacity){
         instance.opacity(this.descriptorWrapper?.opacity)
     }
-    if(this.descriptorWrapper?.transformStringify !== '[1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]'){
-        instance.transform(this.getTransform())
-    }
+    // if(this.descriptorWrapper?.transformStringify !== '[1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]'){
+    //     instance.transform(this.getTransform())
+    // }
     if(this.descriptorWrapper?.isClipping){
         instance.clip(this.descriptorWrapper?.isClipping)
     }
