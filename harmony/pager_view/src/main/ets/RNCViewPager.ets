@@ -28,9 +28,17 @@ import{
   RNViewBase,
   ComponentBuilderContext,
   RNComponentFactory,
+  rnComponentFactoryBuilder,
+  ViewDescriptorWrapper,
+  ViewRawProps,
+  ViewDescriptorWrapperBase,
+  ViewBaseDescriptor,
+  TransformMatrix,
   Tag,
   RNOHComponentCommand
 } from 'rnoh'
+import {ViewModifier} from './ViewModifier';
+
 import inputMethod from '@ohos.inputMethod';
 import { RNCViewPagerManager } from './RNCViewPagerManager';
 import Logger from './Logger';
@@ -50,10 +58,22 @@ export interface ViewPagerProps extends ViewBaseProps{
   keyboardDismissMode:string
 }
 
-export  type ViewPagerDescriptor = Descriptor<"RNCViewPager",ViewPagerProps>
+export interface ViewPagerRawProps extends ViewRawProps{
+}
+
+export interface ViewPagerState{
+}
+
+export  type ViewPagerDescriptor = Descriptor<"RNCViewPager",ViewPagerProps,ViewPagerState,ViewPagerRawProps>
+
+export  class ViewPagerDescriptorWrapper extends ViewDescriptorWrapperBase<"RNCViewPager",ViewPagerProps,ViewPagerState,ViewPagerRawProps>{
+
+}
 
 @Component
 export struct RNCViewPager{
+ @State private descriptorWrapper:ViewPagerDescriptorWrapper | undefined = undefined
+
   ctx!: RNOHContext
   tag: number = 0
   @BuilderParam buildCustomComponent: (ComponentBuilderContext: ComponentBuilderContext) => void
@@ -72,14 +92,14 @@ export struct RNCViewPager{
   private componentManager!: RNCViewPagerManager
 
   aboutToAppear(){
-    Logger.info(TAG,`props:${JSON.stringify(this.descriptor.props)}`)
-
+    this.initComponent()
     this.descriptor = this.ctx.descriptorRegistry.getDescriptor<ViewPagerDescriptor>(this.tag)
-    this.unregisterDescriptorChangesListener = this.ctx.descriptorRegistry.subscribeToDescriptorChanges(this.tag,
-      (newDescriptor)=>{
-        this.descriptor = (newDescriptor as ViewPagerDescriptor)
-      }
-    )
+    Logger.info(TAG,`props:${JSON.stringify(this.descriptor.props)}`)
+    //this.unregisterDescriptorChangesListener = this.ctx.descriptorRegistry.subscribeToDescriptorChanges(this.tag,
+    //  (newDescriptor)=>{
+    //    this.descriptor = (newDescriptor as ViewPagerDescriptor)
+    //  }
+    //)
     this.pageIndex = this.descriptor.props.initialPage
     this.pageScrollEnabled = this.descriptor.props.scrollEnabled
     this.cleanupCommandCallback = this.ctx.commandDispatcher.registerCommandCallback(
@@ -103,8 +123,30 @@ export struct RNCViewPager{
         }
       });
 
-    this.componentManager = new RNCViewPagerManager(this.tag,this.ctx,this.pageIndex)
+    //this.componentManager = new RNCViewPagerManager(this.tag,this.ctx,this.pageIndex)
+    this.componentManager.setPage(this.pageIndex)
+    //this.unregisterComponentManager = this.ctx.componentManagerRegistry.registerComponentManager(this.tag,this.componentManager)
+  }
+
+  initComponent() {
+     let descriptor = this.ctx.descriptorRegistry.getDescriptor<ViewBaseDescriptor>(this.tag)
+     if(!this.componentManager){
+       this.componentManager = new RNCViewPagerManager(this.tag,this.ctx,0)
+     }
     this.unregisterComponentManager = this.ctx.componentManagerRegistry.registerComponentManager(this.tag,this.componentManager)
+    this.setDescriptor(descriptor)
+    const parentTag = descriptor.parentTag
+    this.componentManager.setParentTag(parentTag)
+    this.unregisterDescriptorChangesListener = this.ctx.descriptorRegistry.subscribeToDescriptorChanges(this.tag,
+      (newDescriptor)=>{
+        this.descriptor = (newDescriptor as ViewPagerDescriptor)
+        setDescriptor(newDescriptor)
+      }
+    )
+  }
+
+  private setDescriptor(descriptor:ViewBaseDescriptor){
+    this.descriptorWrapper = new ViewPagerDescriptorWrapper(descriptor)
   }
 
   aboutToDisappear(){
@@ -168,8 +210,7 @@ export struct RNCViewPager{
     if (!this.onMoving) {
       this.emitTouchEvent("settling");
     }
-    //使用flag标识区间
-    this.onMoving = true
+ 
   }
 
   onAnimationEnd(index:number){
@@ -189,8 +230,6 @@ export struct RNCViewPager{
       }
     );
     
-    //使用flag标识区间,一个拖动过程end
-    this.onMoving = false;
   }
 
   onTouchEvent(event:TouchEvent){
@@ -218,18 +257,24 @@ export struct RNCViewPager{
   }
 
   build(){
-    RNViewBase({ ctx:this.ctx,tag:this.tag,componentManager:this.componentManager }){
+ 
       Swiper(this.swiperController){
         ForEach(this.descriptor.childrenTags,(tag:Tag) => {
           Stack(){
-            RNComponentFactory({ ctx:this.ctx,tag:tag,buildCustomComponent:this.buildCustomComponent })
+            //RNComponentFactory({ ctx:this.ctx,tag:tag,buildCustomComponent:this.buildCustomComponent })
+            rnComponentFactoryBuilder(this.ctx,tag,this.ctx.rnInstance.getComponentNameFromDescriptorType(this.ctx.descriptorRegistry.getDescriptor(tag)?.type))
           }
           .width("100%")
           .height("100%")
         },(tag:Tag) => tag.toString())
       }
-      .width("100%")
-      .height("100%")
+      .attributeModifier(ViewModifier.getInstance().setDescriptor(this.descriptorWrapper))
+      .id(this.tag.toString())
+      .accessibilityGroup(this.descriptorWrapper?.accessibilityGroup)
+      .accessibilityText(this.descriptorWrapper?.accessibilityText)
+      .accessibilityLevel(this.descriptorWrapper?.accessibilityLevel)
+      .accessibilityDescription(this.descriptorWrapper?.accessibilityDescription)
+
       .index(this.pageIndex)
       .indicator(false)
       .vertical(this.descriptor.props.orientation == "horizontal" ? false : true)
@@ -238,11 +283,15 @@ export struct RNCViewPager{
       .cachedCount(this.descriptor.props.offscreenPageLimit)
       .disableSwipe(!this.pageScrollEnabled || this.isNativeLock)
       .effectMode(this.getEffectMode())
+      .duration(this.AnimationDuration)
+      .loop(false)
+
       .onChange((index:number)=>this.onChange(index))
       .onAnimationStart((index:number)=>this.onAnimationStart(index))
       .onAnimationEnd((index:number)=>this.onAnimationEnd(index))
-      .duration(this.AnimationDuration)
-      .loop(false)
+      .onTouch( (event:TouchEvent)=>{
+        this.onTouchEvent(event)
+      })
       .onGestureSwipe((index:number,extraInfo:SwiperAnimationEvent)=>{
         Logger.debug(TAG,`onGestureSwipe,onGestureSwipe:${index},extraInfo:${JSON.stringify(extraInfo)}`)
         //1216修改，规避起始边缘tab异常场景（双指右滑，选项卡异常）,22是测试观察取的经验值
@@ -288,6 +337,6 @@ export struct RNCViewPager{
           }
         );
       })
-    }
   }
+  
 }
