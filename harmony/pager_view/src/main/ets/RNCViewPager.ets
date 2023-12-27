@@ -200,7 +200,7 @@ export struct RNCViewPager {
 
   onTouchEvent(event: TouchEvent) {
     Logger.debug(TAG, `onTouch,touch evet type:${event.type}`)
-    if (event.type === TouchType.Move) {
+    if (event.type === TouchType.Move  && this.pageScrollEnabled && ! this.isNativeLock) {
       if (!this.onTouching) {
         this.emitTouchEvent("dragging");
       }
