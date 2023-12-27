@@ -7,6 +7,6 @@
   "name": "pager_view",
   "description": "Please describe the basic information.",
   "main": "Index.ets",
-  "version": "1.0.0",
+  "version": "6.2.3",
   "dependencies": {}
 }

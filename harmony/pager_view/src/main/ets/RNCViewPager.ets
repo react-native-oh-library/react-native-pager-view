@@ -21,7 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-import{
+
+import {
   Descriptor,
   RNOHContext,
   ViewBaseProps,
@@ -36,48 +37,49 @@ import inputMethod from '@ohos.inputMethod';
 import { RNCViewPagerManager } from './RNCViewPagerManager';
 import Logger from './Logger';
 
-export const PAGER_VIEW_TYPE:string = "RNCViewPager"
-const TAG: string = "[RNOH] RNCViewPager"
+export const PAGER_VIEW_TYPE: string = "RNCViewPager";
 
-export interface ViewPagerProps extends ViewBaseProps{
-  initialPage:number
-  layoutDirection:string
-  orientation:string
-  pageMargin:number
-  offscreenPageLimit:number
-  scrollEnabled:boolean
-  overScrollMode:string
-  overdrag:boolean
-  keyboardDismissMode:string
+const TAG: string = "[RNOH] RNCViewPager";
+
+export interface ViewPagerProps extends ViewBaseProps {
+  initialPage: number
+  layoutDirection: string
+  orientation: string
+  pageMargin: number
+  offscreenPageLimit: number
+  scrollEnabled: boolean
+  overScrollMode: string
+  overdrag: boolean
+  keyboardDismissMode: string
 }
 
-export  type ViewPagerDescriptor = Descriptor<"RNCViewPager",ViewPagerProps>
+export type ViewPagerDescriptor = Descriptor<"RNCViewPager", ViewPagerProps>
 
 @Component
-export struct RNCViewPager{
+export struct RNCViewPager {
   ctx!: RNOHContext
   tag: number = 0
   @BuilderParam buildCustomComponent: (ComponentBuilderContext: ComponentBuilderContext) => void
   @State descriptor: ViewPagerDescriptor = {} as ViewPagerDescriptor
+  @State pageIndex: number = 0
+  @State pageScrollEnabled: boolean = true
+  @State isNativeLock: boolean = false
+  private inputMethodController = inputMethod.getInputMethodController();
+  private onTouching: boolean = false
+  private componentManager!: RNCViewPagerManager
   private swiperController: SwiperController = new SwiperController()
   private unregisterDescriptorChangesListener?: () => void = undefined
   private cleanupCommandCallback?: () => void = undefined
   private unregisterComponentManager?: () => void = undefined
   private defaultDuration: number = 100
-  @State pageIndex: number = 0
-  @State pageScrollEnabled: boolean = true
-  @State isNativeLock:boolean = false
   @State AnimationDuration: number = this.defaultDuration
-  private inputMethodController = inputMethod.getInputMethodController();
-  private onMoving: boolean = false
-  private componentManager!: RNCViewPagerManager
 
-  aboutToAppear(){
-    Logger.info(TAG,`props:${JSON.stringify(this.descriptor.props)}`)
 
+  aboutToAppear() {
     this.descriptor = this.ctx.descriptorRegistry.getDescriptor<ViewPagerDescriptor>(this.tag)
+    Logger.info(TAG, `props:${JSON.stringify(this.descriptor.props)}`)
     this.unregisterDescriptorChangesListener = this.ctx.descriptorRegistry.subscribeToDescriptorChanges(this.tag,
-      (newDescriptor)=>{
+      (newDescriptor) => {
         this.descriptor = (newDescriptor as ViewPagerDescriptor)
       }
     )
@@ -85,144 +87,151 @@ export struct RNCViewPager{
     this.pageScrollEnabled = this.descriptor.props.scrollEnabled
     this.cleanupCommandCallback = this.ctx.commandDispatcher.registerCommandCallback(
       this.tag,
-      (command,args:(boolean|number)[]) => {
-        Logger.info(TAG,`CommandCallback,command: ${command}`)
-        if(command === 'setPage'){
-          Logger.info(TAG,`setPage,selectedPage: ${args[0]}`)
+      (command, args: (boolean | number)[]) => {
+        if (command === 'setPage') {
+          Logger.debug(TAG, `setPage command, selectedPage: ${args[0]}`)
           this.pageIndex = args[0] as number
-        }else if(command === 'setPageWithoutAnimation'){
-          Logger.info(TAG,`setPageWithoutAnimation,selectedPage: ${args[0]}`)
+        } else if (command === 'setPageWithoutAnimation') {
+          Logger.debug(TAG, `setPageWithoutAnimation command, selectedPage: ${args[0]}`)
           this.AnimationDuration = 0
           this.pageIndex = args[0] as number
-        }else if(command === 'setScrollEnabledImperatively'){
-          Logger.info(TAG,`setScrollEnabledImperatively,scrollEnabled: ${args[0]}`)
+        } else if (command === 'setScrollEnabledImperatively') {
+          Logger.debug(TAG, `setScrollEnabledImperatively command, scrollEnabled: ${args[0]}`)
           this.pageScrollEnabled = Boolean(args[0])
+          if (!this.pageScrollEnabled) {
+            this.emitTouchEvent("idle")
+          }
         } else if (command === RNOHComponentCommand.BLOCK_NATIVE_RESPONDER) {
+          Logger.debug(TAG, `BLOCK_NATIVE_RESPONDER command`)
           this.isNativeLock = true
+          this.emitTouchEvent("idle")
         } else if (command === RNOHComponentCommand.UNBLOCK_NATIVE_RESPONDER) {
+          Logger.debug(TAG, `UNBLOCK_NATIVE_RESPONDER command`)
           this.isNativeLock = false
         }
       });
 
-    this.componentManager = new RNCViewPagerManager(this.tag,this.ctx,this.pageIndex)
-    this.unregisterComponentManager = this.ctx.componentManagerRegistry.registerComponentManager(this.tag,this.componentManager)
+    if (!this.componentManager) {
+      this.componentManager = new RNCViewPagerManager(this.tag, this.ctx, this.pageIndex)
+    }
+    this.unregisterComponentManager = this.ctx.componentManagerRegistry.registerComponentManager(this.tag, this.componentManager)
   }
 
-  aboutToDisappear(){
+  aboutToDisappear() {
     this.cleanupCommandCallback?.();
     this.unregisterDescriptorChangesListener?.()
     this.unregisterComponentManager?.()
   }
 
-  getEffectMode(){
-    if(this.descriptor.props.overdrag){
-      return EdgeEffect.Spring
-    }else{
+  getEffectMode() {
+    if (this.descriptor.props.overdrag) {
+      return EdgeEffect.Spring;
+    } else {
       if (this.descriptor.props.overScrollMode == "never") {
-        return EdgeEffect.None
+        return EdgeEffect.None;
       } else {
-        return EdgeEffect.Fade
+        return EdgeEffect.Fade;
       }
     }
   }
 
-  onChange(index:number){
+  onChange(index: number) {
     this.pageIndex = index;
     this.componentManager.setPage(this.pageIndex)
-    Logger.info(TAG,`onChange,${JSON.stringify({
-      type:"selected",
-      pageIndex:index
+    Logger.debug(TAG, `onChange,${JSON.stringify({
+      type: "selected",
+      pageIndex: index
     })}`)
-    this.ctx.rnInstanceManager.emitComponentEvent(
+    this.ctx.rnInstance.emitComponentEvent(
       this.descriptor.tag,
       PAGER_VIEW_TYPE,
       {
-        type:"selected",
-        pageIndex:index
+        type: "selected",
+        pageIndex: index
       }
     );
 
-    this.ctx.rnInstanceManager.emitComponentEvent(
+    this.ctx.rnInstance.emitComponentEvent(
       this.descriptor.tag,
       PAGER_VIEW_TYPE,
       {
-        type:"scroll",
-        position:index,
-        offset:0
+        type: "scroll",
+        position: index,
+        offset: 0
       }
     );
   }
 
-  onAnimationStart(index:number){
-    Logger.info(TAG,`onAnimationStart,index number:${index}`)
+  onAnimationStart(index: number) {
+    Logger.debug(TAG, `onAnimationStart,index number:${index}`)
     if (this.descriptor.props.keyboardDismissMode == "on-drag") {
-      this.inputMethodController.stopInput().then((result) => {
+      this.inputMethodController.stopInputSession().then((result) => {
         if (result) {
-          Logger.info(TAG,'Success to stopInput.(promise)');
+          Logger.info(TAG, 'Success to stopInput.(promise)');
         } else {
-          Logger.info(TAG,'Failed to stopInput.(promise)');
+          Logger.warn(TAG, 'Failed to stopInput.(promise)');
         }
-      }).catch((err:string | Error) => {
-        Logger.error(TAG,'stopInput promise err:' + JSON.stringify(err));
+      }).catch((err: string | Error) => {
+        Logger.error(TAG, 'stopInput promise err:' + JSON.stringify(err));
       })
     }
-    if (!this.onMoving) {
+    if (!this.onTouching) {
       this.emitTouchEvent("settling");
     }
   }
 
-  onAnimationEnd(index:number){
-    Logger.info(TAG,`onAnimationEnd,index number:${index}`)
-    if (!this.onMoving) {
+  onAnimationEnd(index: number) {
+    Logger.debug(TAG, `onAnimationEnd,index number:${index}`)
+    if (!this.onTouching) {
       this.emitTouchEvent("idle");
     }
     this.AnimationDuration = this.defaultDuration
 
-    this.ctx.rnInstanceManager.emitComponentEvent(
+    this.ctx.rnInstance.emitComponentEvent(
       this.descriptor.tag,
       PAGER_VIEW_TYPE,
       {
-        type:"scroll",
-        position:index,
-        offset:0
+        type: "scroll",
+        position: index,
+        offset: 0
       }
     );
   }
 
-  onTouchEvent(event:TouchEvent){
-    Logger.info(TAG,`onTouch,touch evet type:${event.type}`)
+  onTouchEvent(event: TouchEvent) {
+    Logger.debug(TAG, `onTouch,touch evet type:${event.type}`)
     if (event.type === TouchType.Move) {
-      if (!this.onMoving) {
+      if (!this.onTouching) {
         this.emitTouchEvent("dragging");
       }
-      this.onMoving = true;
+      this.onTouching = true;
     }
     if (event.type === TouchType.Up) {
-      this.onMoving = false;
+      this.onTouching = false;
     }
   }
 
-  emitTouchEvent(event:string){
-    this.ctx.rnInstanceManager.emitComponentEvent(
+  emitTouchEvent(event: string) {
+    this.ctx.rnInstance.emitComponentEvent(
       this.descriptor.tag,
       PAGER_VIEW_TYPE,
       {
-        type:"scroll_state_changed",
-        pageScrollState:event
+        type: "scroll_state_changed",
+        pageScrollState: event
       }
     );
   }
 
-  build(){
-    RNViewBase({ ctx:this.ctx,tag:this.tag,componentManager:this.componentManager }){
-      Swiper(this.swiperController){
-        ForEach(this.descriptor.childrenTags,(tag:Tag) => {
-          Stack(){
-            rnComponentFactoryBuilder(this.ctx,tag,this.ctx.rnInstance.getComponentNameFromDescriptorType(this.ctx.descriptorRegistry.getDescriptor(tag)?.type))
+  build() {
+    RNViewBase({ ctx: this.ctx, tag: this.tag}) {
+      Swiper(this.swiperController) {
+        ForEach(this.descriptor.childrenTags, (tag: Tag) => {
+          Stack() {
+            rnComponentFactoryBuilder(this.ctx, tag, this.ctx.rnInstance.getComponentNameFromDescriptorType(this.ctx.descriptorRegistry.getDescriptor(tag)?.type))
           }
           .width("100%")
           .height("100%")
-        },(tag:Tag) => tag.toString())
+        }, (tag: Tag) => tag.toString())
       }
       .width("100%")
       .height("100%")
@@ -234,24 +243,27 @@ export struct RNCViewPager{
       .cachedCount(this.descriptor.props.offscreenPageLimit)
       .disableSwipe(!this.pageScrollEnabled || this.isNativeLock)
       .effectMode(this.getEffectMode())
-      .onChange((index:number)=>this.onChange(index))
-      .onAnimationStart((index:number)=>this.onAnimationStart(index))
-      .onAnimationEnd((index:number)=>this.onAnimationEnd(index))
+      .onChange((index: number) => this.onChange(index))
+      .onAnimationStart((index: number) => this.onAnimationStart(index))
+      .onAnimationEnd((index: number) => this.onAnimationEnd(index))
       .duration(this.AnimationDuration)
       .loop(false)
-      .onTouch( (event:TouchEvent)=>{
+      .onTouch((event: TouchEvent) => {
         this.onTouchEvent(event)
       })
-      .onGestureSwipe((index:number,extraInfo:SwiperAnimationEvent)=>{
-        Logger.debug(TAG,`onGestureSwipe,onGestureSwipe:${index},extraInfo:${JSON.stringify(extraInfo)}`)
-        //1216修改，规避起始边缘tab异常场景（双指右滑，选项卡异常）,22是测试观察取的经验值
-        if (index == 0 && Math.abs(extraInfo.currentOffset) < 22) {
-          Logger.debug(TAG,`onGestureSwipe,ignore，limit offset:${index},extraInfo:${JSON.stringify(extraInfo)}`)
+      .onGestureSwipe((index: number, extraInfo: SwiperAnimationEvent) => {
+        Logger.debug(TAG, `onGestureSwipe,onGestureSwipe:${index},extraInfo:${JSON.stringify(extraInfo)}`)
+        if (!this.pageScrollEnabled || this.isNativeLock) {
           return
         }
-         //1216修改，规避起始边缘tab异常场景（双指右滑，选项卡异常）
-        if (!this.onMoving) {
-          Logger.debug(TAG,`onGestureSwipe,ignore，no in gap:${index},extraInfo:${JSON.stringify(extraInfo)}`)
+        //1216修改，规避起始边缘tab异常场景（双指右滑，选项卡异常）,22是测试观察取的经验值
+        if (index == 0 && Math.abs(extraInfo.currentOffset) < 22) {
+          Logger.debug(TAG, `onGestureSwipe,ignore，limit offset:${index},extraInfo:${JSON.stringify(extraInfo)}`)
+          return
+        }
+        //1216修改，规避起始边缘tab异常场景（双指右滑，选项卡异常）
+        if (!this.onTouching) {
+          Logger.debug(TAG, `onGestureSwipe,ignore，no in gap:${index},extraInfo:${JSON.stringify(extraInfo)}`)
           return
         }
         // 规避起始边缘tab异常场景（双指右滑，选项卡异常）
@@ -263,27 +275,27 @@ export struct RNCViewPager{
         let offset = 0;
         let finalIndex = index;
         if (extraInfo.currentOffset < 0) {
-          offset = Math.abs(extraInfo.currentOffset/this.descriptor.layoutMetrics.frame.size.width)
+          offset = Math.abs(extraInfo.currentOffset / this.descriptor.layoutMetrics.frame.size.width);
         } else {
-          finalIndex = (index - 1) > 0 ? (index - 1) : 0
-          offset = 1 - Math.abs(extraInfo.currentOffset/this.descriptor.layoutMetrics.frame.size.width)
+          finalIndex = (index - 1) > 0 ? (index - 1) : 0;
+          offset = 1 - Math.abs(extraInfo.currentOffset / this.descriptor.layoutMetrics.frame.size.width);
         }
 
         if (offset > 1) {
-          offset = offset - 1
-          finalIndex = finalIndex + 1
-        }else if(offset < 0 && finalIndex >= 1){
-          offset = offset + 1
-          finalIndex = finalIndex - 1
+          offset = offset - 1;
+          finalIndex = finalIndex + 1;
+        } else if (offset < 0 && finalIndex >= 1) {
+          offset = offset + 1;
+          finalIndex = finalIndex - 1;
         }
 
-        this.ctx.rnInstanceManager.emitComponentEvent(
+        this.ctx.rnInstance.emitComponentEvent(
           this.descriptor.tag,
           PAGER_VIEW_TYPE,
           {
-            type:"scroll",
-            position:finalIndex,
-            offset:offset
+            type: "scroll",
+            position: finalIndex,
+            offset: offset
           }
         );
       })

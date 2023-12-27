@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 import { RNOHContext,RNViewManager,Tag } from 'rnoh';
 import {ViewPagerDescriptor} from './RNCViewPager';
 
