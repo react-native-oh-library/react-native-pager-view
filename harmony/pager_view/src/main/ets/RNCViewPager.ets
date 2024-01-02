@@ -69,7 +69,6 @@ export struct RNCViewPager {
   @State isNativeLock: boolean = false
   @State AnimationDuration: number = this.defaultDuration
   private inputMethodController = inputMethod.getInputMethodController();
-  private onTouching: boolean = false
   private componentManager!: RNCViewPagerManager
   private swiperController: SwiperController = new SwiperController()
   private unregisterDescriptorChangesListener?: () => void = undefined
@@ -239,9 +238,6 @@ export struct RNCViewPager {
       .onAnimationEnd((index: number) => this.onAnimationEnd(index))
       .duration(this.AnimationDuration)
       .loop(false)
-      .onTouch((event: TouchEvent) => {
-        this.onTouchEvent(event)
-      })
       .onGestureSwipe((index: number, extraInfo: SwiperAnimationEvent) => {
         Logger.debug(TAG, `onGestureSwipe,onGestureSwipe:${index},extraInfo:${JSON.stringify(extraInfo)}`)
         if (!this.pageScrollEnabled || this.isNativeLock) {
