@@ -55,6 +55,9 @@ export interface ViewPagerProps extends ViewBaseProps {
 
 export type ViewPagerDescriptor = Descriptor<"RNCViewPager", ViewPagerProps>
 
+export type ViewPagerState = 'idle' | 'dragging' | 'settling'
+
+
 @Component
 export struct RNCViewPager {
   ctx!: RNOHContext
@@ -64,6 +67,7 @@ export struct RNCViewPager {
   @State pageIndex: number = 0
   @State pageScrollEnabled: boolean = true
   @State isNativeLock: boolean = false
+  @State AnimationDuration: number = this.defaultDuration
   private inputMethodController = inputMethod.getInputMethodController();
   private onTouching: boolean = false
   private componentManager!: RNCViewPagerManager
@@ -72,8 +76,7 @@ export struct RNCViewPager {
   private cleanupCommandCallback?: () => void = undefined
   private unregisterComponentManager?: () => void = undefined
   private defaultDuration: number = 100
-  @State AnimationDuration: number = this.defaultDuration
-
+  private currentState: ViewPagerState = 'idle'
 
   aboutToAppear() {
     this.descriptor = this.ctx.descriptorRegistry.getDescriptor<ViewPagerDescriptor>(this.tag)
@@ -175,16 +178,12 @@ export struct RNCViewPager {
         Logger.error(TAG, 'stopInput promise err:' + JSON.stringify(err));
       })
     }
-    if (!this.onTouching) {
-      this.emitTouchEvent("settling");
-    }
+    this.emitTouchEvent("settling");
   }
 
   onAnimationEnd(index: number) {
     Logger.debug(TAG, `onAnimationEnd,index number:${index}`)
-    if (!this.onTouching) {
-      this.emitTouchEvent("idle");
-    }
+    this.emitTouchEvent("idle");
     this.AnimationDuration = this.defaultDuration
 
     this.ctx.rnInstance.emitComponentEvent(
@@ -198,20 +197,12 @@ export struct RNCViewPager {
     );
   }
 
-  onTouchEvent(event: TouchEvent) {
-    Logger.debug(TAG, `onTouch,touch evet type:${event.type}`)
-    if (event.type === TouchType.Move  && this.pageScrollEnabled && ! this.isNativeLock) {
-      if (!this.onTouching) {
-        this.emitTouchEvent("dragging");
-      }
-      this.onTouching = true;
+  emitTouchEvent(event: ViewPagerState) {
+    if (this.currentState == event) {
+      return;
     }
-    if (event.type === TouchType.Up) {
-      this.onTouching = false;
-    }
-  }
-
-  emitTouchEvent(event: string) {
+    this.currentState = event
+    Logger.debug(TAG, `emitTouchEvent:${event}`)
     this.ctx.rnInstance.emitComponentEvent(
       this.descriptor.tag,
       PAGER_VIEW_TYPE,
@@ -259,15 +250,6 @@ export struct RNCViewPager {
         //1216修改，规避起始边缘tab异常场景（双指右滑，选项卡异常）,22是测试观察取的经验值
         if (index == 0 && Math.abs(extraInfo.currentOffset) < 22) {
           Logger.debug(TAG, `onGestureSwipe,ignore，limit offset:${index},extraInfo:${JSON.stringify(extraInfo)}`)
-          return
-        }
-        //1216修改，规避起始边缘tab异常场景（双指右滑，选项卡异常）
-        if (!this.onTouching) {
-          Logger.debug(TAG, `onGestureSwipe,ignore，no in gap:${index},extraInfo:${JSON.stringify(extraInfo)}`)
-          return
-        }
-        // 规避起始边缘tab异常场景（双指右滑，选项卡异常）
-        if (index == 0 && extraInfo.currentOffset == 0) {
           return
         }
         this.emitTouchEvent("dragging");
