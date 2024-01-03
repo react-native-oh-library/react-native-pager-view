@@ -67,6 +67,7 @@ export struct RNCViewPager {
   @State pageIndex: number = 0
   @State pageScrollEnabled: boolean = true
   @State isNativeLock: boolean = false
+  private defaultDuration: number = 100
   @State AnimationDuration: number = this.defaultDuration
   private inputMethodController = inputMethod.getInputMethodController();
   private componentManager!: RNCViewPagerManager
@@ -74,7 +75,6 @@ export struct RNCViewPager {
   private unregisterDescriptorChangesListener?: () => void = undefined
   private cleanupCommandCallback?: () => void = undefined
   private unregisterComponentManager?: () => void = undefined
-  private defaultDuration: number = 100
   private currentState: ViewPagerState = 'idle'
 
   aboutToAppear() {
