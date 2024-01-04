@@ -213,7 +213,7 @@ export struct RNCViewPager {
   }
 
   build() {
-    RNViewBase({ ctx: this.ctx, tag: this.tag}) {
+    RNViewBase({ ctx: this.ctx, tag: this.tag, componentManager:this.componentManager}) {
       Swiper(this.swiperController) {
         ForEach(this.descriptor.childrenTags, (tag: Tag) => {
           Stack() {
