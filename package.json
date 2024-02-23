@@ -1,6 +1,6 @@
 {
   "name": "@react-native-oh-tpl/react-native-pager-view",
-  "version": "6.2.3-0.0.6",
+  "version": "6.2.3-0.0.7",
   "description": "React Native wrapper for Harmony ViewPager",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -118,11 +118,6 @@
     "tabWidth": 2,
     "trailingComma": "es5",
     "useTabs": false
-  },
-  "codegenConfig": {
-    "name": "RNCViewPager",
-    "type": "components",
-    "jsSrcsDir": "src"
   },
   "react-native-builder-bob": {
     "source": "src",
