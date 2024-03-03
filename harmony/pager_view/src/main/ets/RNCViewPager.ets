@@ -26,7 +26,6 @@ import {
   Descriptor,
   RNOHContext,
   ViewBaseProps,
-  rnComponentFactoryBuilder,
   RNViewBase,
   ComponentBuilderContext,
   RNComponentFactory,
@@ -217,7 +216,7 @@ export struct RNCViewPager {
       Swiper(this.swiperController) {
         ForEach(this.descriptor.childrenTags, (tag: Tag) => {
           Stack() {
-            rnComponentFactoryBuilder(this.ctx, tag, this.ctx.rnInstance.getComponentNameFromDescriptorType(this.ctx.descriptorRegistry.getDescriptor(tag)?.type))
+            RNComponentFactory({ ctx: this.ctx, tag: tag, buildCustomComponent: this.buildCustomComponent })
           }
           .width("100%")
           .height("100%")
