@@ -14,6 +14,15 @@ namespace rnoh {
         maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_GESTURE_SWIPE, 3));
     }
 
+
+   SwiperNode::~SwiperNode() {
+        NativeNodeApi::getInstance()->unregisterNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_ANIMATION_START);
+        NativeNodeApi::getInstance()->unregisterNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_ANIMATION_END);
+        NativeNodeApi::getInstance()->unregisterNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_CHANGE);
+        NativeNodeApi::getInstance()->unregisterNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_GESTURE_SWIPE);
+    }
+
+
     void SwiperNode::insertChild(ArkUINode &child, std::size_t index) {
         maybeThrow(NativeNodeApi::getInstance()->addChild(m_nodeHandle, child.getArkUINodeHandle()));                                  
     }
@@ -174,4 +183,12 @@ namespace rnoh {
         maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_SWIPER_DURATION,&indexItem));
         return *this;
     }
+
+    SwiperNode &SwiperNode::setCurve(int const &curve) {
+        static ArkUI_NumberValue indexValue[] = {{.i32 = curve}};
+        static ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
+        maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_SWIPER_CURVE, &indexItem));
+        return *this;
+    }
+
 } // namespace rnoh

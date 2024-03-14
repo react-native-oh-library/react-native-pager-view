@@ -33,7 +33,9 @@ namespace rnoh {
 
     public:
         SwiperNode();
-
+    
+        ~SwiperNode() override;
+    
         void setSwiperNodeDelegate(SwiperNodeDelegate *swiperNodeDelegate);
 
         void insertChild(ArkUINode &child, std::size_t index);
@@ -61,6 +63,8 @@ namespace rnoh {
         SwiperNode &setDuration(int const &duration);
     
         SwiperNode &setIndicator(bool const &indicator);
+    
+        SwiperNode &setCurve(int const &curve);
     
     };
 
