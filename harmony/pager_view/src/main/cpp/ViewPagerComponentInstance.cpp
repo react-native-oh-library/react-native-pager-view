@@ -123,10 +123,12 @@ namespace rnoh {
 
     void ViewPagerComponentInstance::setLayout(facebook::react::LayoutMetrics layoutMetrics) {
         this->m_layoutMetricsWidth = layoutMetrics.frame.size.width;
+        this->getLocalRootArkUINode().setPosition(layoutMetrics.frame.origin);
+        this->getLocalRootArkUINode().setSize(layoutMetrics.frame.size);
     }
 
     int ViewPagerComponentInstance::getLayoutMetricsWidth(){
        return this->m_layoutMetricsWidth;
     }
 
-} // namespace rnoh
+} // namespace rnoh/
