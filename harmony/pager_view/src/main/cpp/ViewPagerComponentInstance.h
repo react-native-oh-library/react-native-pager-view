@@ -20,7 +20,7 @@ namespace rnoh {
         int m_layoutMetricsWidth;
 
     public:
-        ViewPagerComponentInstance(Context context, facebook::react::Tag tag);
+        ViewPagerComponentInstance(Context context);
 
         void insertChild(ComponentInstance::Shared childComponentInstance, std::size_t index) override;
 

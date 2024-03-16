@@ -3,8 +3,8 @@
 
 namespace rnoh {
 
-    ViewPagerComponentInstance::ViewPagerComponentInstance(Context context, facebook::react::Tag tag)
-        : CppComponentInstance(std::move(context), tag) {
+    ViewPagerComponentInstance::ViewPagerComponentInstance(Context context)
+        : CppComponentInstance(std::move(context)) {
         m_swiperNode.setSwiperNodeDelegate(this);
     }
 

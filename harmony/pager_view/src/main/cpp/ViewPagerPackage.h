@@ -38,9 +38,9 @@ namespace rnoh{
     public:
         using ComponentInstanceFactoryDelegate::ComponentInstanceFactoryDelegate;
 
-        ComponentInstance::Shared create(ComponentInstanceFactoryContext ctx) override {
+        ComponentInstance::Shared create(ComponentInstance::Context ctx) override {
             if (ctx.componentName == "RNCViewPager") {
-                return std::make_shared<ViewPagerComponentInstance>(m_ctx, ctx.tag);
+                return std::make_shared<ViewPagerComponentInstance>(ctx);
             }
             return nullptr;
         }
@@ -51,7 +51,7 @@ namespace rnoh{
       ViewPagerPackage(Package::Context ctx) : Package(ctx){}
 
       ComponentInstanceFactoryDelegate::Shared createComponentInstanceFactoryDelegate() override {
-            return std::make_shared<ViewPagerPackageComponentInstanceFactoryDelegate>(m_ctx);
+            return std::make_shared<ViewPagerPackageComponentInstanceFactoryDelegate>();
       }
 
       std::vector<facebook::react::ComponentDescriptorProvider> createComponentDescriptorProviders() override
