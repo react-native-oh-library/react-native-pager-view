@@ -40,7 +40,7 @@ namespace rnoh{
 
         ComponentInstance::Shared create(ComponentInstance::Context ctx) override {
             if (ctx.componentName == "RNCViewPager") {
-                return std::make_shared<ViewPagerComponentInstance>(ctx);
+                return std::make_shared<ViewPagerComponentInstance>(std::move(ctx));
             }
             return nullptr;
         }
