@@ -23,13 +23,12 @@ namespace rnoh {
     void ViewPagerComponentInstance::setProps(facebook::react::Props::Shared props) {
         CppComponentInstance::setProps(props);
         if (auto p = std::dynamic_pointer_cast<const facebook::react::RNCViewPagerProps>(props)) {
-            this->m_PageIndex = p->initialPage;
             this->m_scrollEnabled = p->scrollEnabled;
+            LOG(INFO) << "ViewPagerComponentInstance::setProps: " << p->initialPage;
             this->getLocalRootArkUINode().setIndex(p->initialPage);
             this->getLocalRootArkUINode().setVertical(p->orientation);
             this->getLocalRootArkUINode().setDirection(p->layoutDirection);
             this->getLocalRootArkUINode().setItemSpace(p->pageMargin);
-            this->getLocalRootArkUINode().setCachedCount(p->offscreenPageLimit);
             this->getLocalRootArkUINode().setDisableSwipe(p->scrollEnabled);
             this->getLocalRootArkUINode().setLoop(false);
             this->getLocalRootArkUINode().setIndicator(false);
@@ -60,15 +59,13 @@ namespace rnoh {
     }
 
     void ViewPagerComponentInstance::onPageSelected(double pageIndex) {
-        LOG(INFO) << "ViewPagerComponentInstance::onPageSelected" ;
-        this->m_PageIndex = pageIndex;
-        facebook::react::RNCViewPagerEventEmitter::OnPageSelected event = {this->m_PageIndex};
-        m_viewPagerEventEmitter->onPageSelected(event);
+        LOG(INFO) << "ViewPagerComponentInstance::onPageSelected:" << pageIndex ;
+        facebook::react::RNCViewPagerEventEmitter::OnPageSelected event = {pageIndex};
+        m_viewPagerEventEmitter->onPageSelected(event); 
     }
 
     void ViewPagerComponentInstance::onPageScroll(facebook::react::RNCViewPagerEventEmitter::OnPageScroll pageScroll) {
         LOG(INFO) << "ViewPagerComponentInstance::onPageScroll" ;
-        this->m_PageIndex = pageScroll.position;
         m_viewPagerEventEmitter->onPageScroll(pageScroll);
     }
 

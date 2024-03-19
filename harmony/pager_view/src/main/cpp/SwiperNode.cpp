@@ -95,48 +95,48 @@ namespace rnoh {
     }
 
     SwiperNode &SwiperNode::setIndex(int const &initialPage) {
-        static ArkUI_NumberValue indexValue[] = {{.i32 = initialPage}};
-        static ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
+        ArkUI_NumberValue indexValue[] = {{.i32 = initialPage}};
+        ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
         maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_SWIPER_INDEX, &indexItem));
         return *this;
     }
 
     SwiperNode &SwiperNode::setVertical(std::string const &orientation) { 
         if(orientation.empty()) return *this;
-        static int orientationValue = (orientation == "horizontal") ? 0:1;
-        static ArkUI_NumberValue indexValue[] = {{.i32 = orientationValue}};
-        static ArkUI_AttributeItem item = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
+        int orientationValue = (orientation == "horizontal") ? 0:1;
+        ArkUI_NumberValue indexValue[] = {{.i32 = orientationValue}};
+        ArkUI_AttributeItem item = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
         maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_SWIPER_VERTICAL, &item));
         return *this;
     }
 
     SwiperNode &SwiperNode::setDirection(std::string const &layoutDirection) {
         if(layoutDirection.empty()) return *this;
-        static int  layoutDirectionValue = (layoutDirection == "ltr") ? 1:0;
-        static ArkUI_NumberValue indexValue[] = {{.i32 = layoutDirectionValue}};
-        static ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
+        int  layoutDirectionValue = (layoutDirection == "ltr") ? 1:0;
+        ArkUI_NumberValue indexValue[] = {{.i32 = layoutDirectionValue}};
+        ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
         maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_DIRECTION,&indexItem));
         return *this;
     }
 
    SwiperNode &SwiperNode::setItemSpace(int const &pageMargin) { 
-        static ArkUI_NumberValue indexValue[] = {{.i32 = pageMargin}};
-        static ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
+        ArkUI_NumberValue indexValue[] = {{.i32 = pageMargin}};
+        ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
         maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_SWIPER_ITEM_SPACE,&indexItem));
         return *this;
     }
 
    SwiperNode &SwiperNode::setCachedCount(int const &offscreenPageLimit) { 
-        static ArkUI_NumberValue indexValue[] = {{.i32 = offscreenPageLimit}};
-        static ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
+        ArkUI_NumberValue indexValue[] = {{.i32 = offscreenPageLimit}};
+        ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
         maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_SWIPER_DISPLAY_COUNT,&indexItem));
         return *this;    
     }
 
    SwiperNode &SwiperNode::setDisableSwipe(bool const &scrollEnabled) {
-        static int scrollEnabledValue = scrollEnabled ? 0:1;
-        static ArkUI_NumberValue indexValue[] = {{.i32 = scrollEnabledValue}};
-        static ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
+        int scrollEnabledValue = scrollEnabled ? 0:1;
+        ArkUI_NumberValue indexValue[] = {{.i32 = scrollEnabledValue}};
+        ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
         maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_SWIPER_DISABLE_SWIPE,&indexItem));
         return *this;
     }
@@ -162,31 +162,31 @@ namespace rnoh {
     }
 
    SwiperNode &SwiperNode::setLoop(bool const &loop) {
-        static int loopValue = loop ? 1:0;
-        static ArkUI_NumberValue indexValue[] = {{.i32 = loopValue}};
-        static ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
+        int loopValue = loop ? 1:0;
+        ArkUI_NumberValue indexValue[] = {{.i32 = loopValue}};
+        ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
         maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_SWIPER_LOOP,&indexItem));
         return *this;
     }
 
    SwiperNode &SwiperNode::setIndicator(bool const &indicator) {
-        static int indicatorValue = indicator ? 1:0;
-        static ArkUI_NumberValue indexValue[] = {{.i32 = indicatorValue}};
-        static ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
+        int indicatorValue = indicator ? 1:0;
+        ArkUI_NumberValue indexValue[] = {{.i32 = indicatorValue}};
+        ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
         maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_SWIPER_SHOW_INDICATOR,&indexItem));
         return *this;
     }
 
    SwiperNode &SwiperNode::setDuration(int const &duration) { 
-        static ArkUI_NumberValue indexValue[] = {{.i32 = duration}};
-        static ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
+        ArkUI_NumberValue indexValue[] = {{.i32 = duration}};
+        ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
         maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_SWIPER_DURATION,&indexItem));
         return *this;
     }
 
     SwiperNode &SwiperNode::setCurve(int const &curve) {
-        static ArkUI_NumberValue indexValue[] = {{.i32 = curve}};
-        static ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
+        ArkUI_NumberValue indexValue[] = {{.i32 = curve}};
+        ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
         maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_SWIPER_CURVE, &indexItem));
         return *this;
     }
