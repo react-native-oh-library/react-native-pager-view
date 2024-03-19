@@ -11,14 +11,12 @@ namespace rnoh {
 
         std::shared_ptr<const facebook::react::RNCViewPagerEventEmitter> m_viewPagerEventEmitter;
     
-        double m_PageIndex;
+        double m_pageIndex;
     
         bool m_scrollEnabled;
     
         bool m_nativeLock;
     
-        int m_layoutMetricsWidth;
-
     public:
         ViewPagerComponentInstance(Context context);
 
@@ -40,11 +38,11 @@ namespace rnoh {
 
         void handleCommand(std::string const &commandName, folly::dynamic const &args) override;
     
+        std::vector<TouchTarget::Shared> getTouchTargetChildren() const override;
+    
         bool getScrollEnabled() override;
     
         bool getNativeLock() override;
-    
-        void setLayout(facebook::react::LayoutMetrics layoutMetrics) override;
     
         int getLayoutMetricsWidth() override;
     };

@@ -24,6 +24,7 @@ namespace rnoh {
         CppComponentInstance::setProps(props);
         if (auto p = std::dynamic_pointer_cast<const facebook::react::RNCViewPagerProps>(props)) {
             this->m_scrollEnabled = p->scrollEnabled;
+            this->m_pageIndex = p->initialPage;
             LOG(INFO) << "ViewPagerComponentInstance::setProps: " << p->initialPage;
             this->getLocalRootArkUINode().setIndex(p->initialPage);
             this->getLocalRootArkUINode().setVertical(p->orientation);
@@ -59,6 +60,7 @@ namespace rnoh {
     }
 
     void ViewPagerComponentInstance::onPageSelected(double pageIndex) {
+        this->m_pageIndex = pageIndex;
         LOG(INFO) << "ViewPagerComponentInstance::onPageSelected:" << pageIndex ;
         facebook::react::RNCViewPagerEventEmitter::OnPageSelected event = {pageIndex};
         m_viewPagerEventEmitter->onPageSelected(event); 
@@ -118,14 +120,15 @@ namespace rnoh {
        return this->m_nativeLock;
     }
 
-    void ViewPagerComponentInstance::setLayout(facebook::react::LayoutMetrics layoutMetrics) {
-        this->m_layoutMetricsWidth = layoutMetrics.frame.size.width;
-        this->getLocalRootArkUINode().setPosition(layoutMetrics.frame.origin);
-        this->getLocalRootArkUINode().setSize(layoutMetrics.frame.size);
+    std::vector<TouchTarget::Shared> ViewPagerComponentInstance::getTouchTargetChildren() const {
+        auto children = getChildren();
+        std::vector<TouchTarget::Shared> result(1);
+        result.push_back(children.at(m_pageIndex));
+        return result;
     }
 
     int ViewPagerComponentInstance::getLayoutMetricsWidth(){
-       return this->m_layoutMetricsWidth;
+       return this->m_layoutMetrics.frame.size.width;
     }
 
 } // namespace rnoh/
