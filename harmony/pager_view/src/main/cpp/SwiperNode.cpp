@@ -11,7 +11,7 @@ namespace rnoh {
         maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_ANIMATION_START, 0));
         maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_ANIMATION_END, 1));
         maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_CHANGE, 2));
-        maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_GESTURE_SWIPE, 3));
+        maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_GESTURE_SWIPE, 3));
     }
 
 
@@ -19,7 +19,7 @@ namespace rnoh {
         NativeNodeApi::getInstance()->unregisterNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_ANIMATION_START);
         NativeNodeApi::getInstance()->unregisterNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_ANIMATION_END);
         NativeNodeApi::getInstance()->unregisterNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_CHANGE);
-        NativeNodeApi::getInstance()->unregisterNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_GESTURE_SWIPE);
+        NativeNodeApi::getInstance()->unregisterNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_GESTURE_SWIPE);
     }
 
 
@@ -62,7 +62,7 @@ namespace rnoh {
                       static_cast<double>(event->componentEvent.data[0].i32),0};
                 m_swiperNodeDelegate->onPageScroll(m_onPageScroll);
         }
-        else if (event->kind == ArkUI_NodeEventType::NODE_SWIPER_EVENT_GESTURE_SWIPE) {
+        else if (event->kind == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_GESTURE_SWIPE) {
                 LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_GESTURE_SWIPE";
                if(!m_swiperNodeDelegate->getScrollEnabled() || m_swiperNodeDelegate->getNativeLock()) return;
                int offset = 0;
@@ -146,17 +146,17 @@ namespace rnoh {
         if(effectMode == "SPRING"){
            ArkUI_NumberValue indexValue[] = {{.i32 = 0}};
             ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
-            maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_SWIPER_EFFECT_MODE,&indexItem));           
+            maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_SWIPER_EDGE_EFFECT_MODE,&indexItem));           
         }
         else if(effectMode == "NONE"){
            ArkUI_NumberValue  indexValue[] = {{.i32 = 2}};
             ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
-            maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_SWIPER_EFFECT_MODE,&indexItem));               
+            maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_SWIPER_EDGE_EFFECT_MODE,&indexItem));               
         }     
         else{
             ArkUI_NumberValue indexValue[] = {{.i32 = 1}};
             ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
-            maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_SWIPER_EFFECT_MODE,&indexItem));            
+            maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_SWIPER_EDGE_EFFECT_MODE,&indexItem));            
         }
         return *this;
     }
