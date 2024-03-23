@@ -133,9 +133,9 @@ namespace rnoh {
         return *this;    
     }
 
-   SwiperNode &SwiperNode::setDisableSwipe(bool const &scrollEnabled) {
-        int scrollEnabledValue = scrollEnabled ? 0:1;
-        ArkUI_NumberValue indexValue[] = {{.i32 = scrollEnabledValue}};
+   SwiperNode &SwiperNode::setDisableSwipe(bool const &disableSwipe) {
+        int disableSwipeValue = disableSwipe ? 1:0;
+        ArkUI_NumberValue indexValue[] = {{.i32 = disableSwipeValue}};
         ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
         maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_SWIPER_DISABLE_SWIPE,&indexItem));
         return *this;

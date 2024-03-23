@@ -7,7 +7,7 @@
   "name": "pager_view",
   "description": "Please describe the basic information.",
   "main": "index.ets",
-  "version": "6.2.3-0.1.8",
+  "version": "6.2.3-0.1.9",
   "dependencies": {
     "rnoh": "file:../rnoh"
   }

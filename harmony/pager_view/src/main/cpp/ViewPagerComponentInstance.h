@@ -45,5 +45,7 @@ namespace rnoh {
         bool getNativeLock() override;
     
         int getLayoutMetricsWidth() override;
+
+        void setNativeResponderBlocked(bool blocked) override;
     };
 } // namespace rnoh

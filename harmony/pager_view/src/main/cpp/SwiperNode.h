@@ -54,7 +54,7 @@ namespace rnoh {
     
         SwiperNode &setCachedCount(int const &offscreenPageLimit);
     
-        SwiperNode &setDisableSwipe(bool const &scrollEnabled);
+        SwiperNode &setDisableSwipe(bool const &disableSwipe);
     
         SwiperNode &setEffectMode(std::string const &effectMode);
     

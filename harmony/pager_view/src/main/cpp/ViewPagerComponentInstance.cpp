@@ -30,7 +30,7 @@ namespace rnoh {
             this->getLocalRootArkUINode().setVertical(p->orientation);
             this->getLocalRootArkUINode().setDirection(p->layoutDirection);
             this->getLocalRootArkUINode().setItemSpace(p->pageMargin);
-            this->getLocalRootArkUINode().setDisableSwipe(p->scrollEnabled);
+            this->getLocalRootArkUINode().setDisableSwipe(!p->scrollEnabled);
             this->getLocalRootArkUINode().setLoop(false);
             this->getLocalRootArkUINode().setIndicator(false);
             this->getLocalRootArkUINode().setDuration(100);
@@ -97,19 +97,6 @@ namespace rnoh {
             this->getLocalRootArkUINode().setIndex(args[0].asInt());
             this->getLocalRootArkUINode().setDuration(0);
         }
-        else if (commandName == "RNOH::BLOCK_NATIVE_RESPONDER"){
-            LOG(INFO) << "handleCommand-->BLOCK_NATIVE_RESPONDER";
-            this->m_nativeLock = true;                    
-            this->getLocalRootArkUINode().setDisableSwipe(true);
-            facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged event = {
-                    facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChangedPageScrollState::Idle};
-            m_viewPagerEventEmitter->onPageScrollStateChanged(event);
-        }
-        else if (commandName == "RNOH::UNBLOCK_NATIVE_RESPONDER"){
-            LOG(INFO) << "handleCommand-->UNBLOCK_NATIVE_RESPONDER";
-            this->m_nativeLock = false;
-            this->getLocalRootArkUINode().setDisableSwipe(false);
-        }    
     }
 
     bool ViewPagerComponentInstance::getScrollEnabled() {
@@ -129,6 +116,20 @@ namespace rnoh {
 
     int ViewPagerComponentInstance::getLayoutMetricsWidth(){
        return this->m_layoutMetrics.frame.size.width;
+    }
+
+    void ViewPagerComponentInstance::setNativeResponderBlocked(bool blocked) {
+        LOG(INFO) << "ViewPagerComponentInstance::setNativeResponderBlocked:" << blocked;
+        if (blocked) {
+            this->m_nativeLock = true;
+            this->getLocalRootArkUINode().setDisableSwipe(true);
+            facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged event = {
+                facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChangedPageScrollState::Idle};
+            m_viewPagerEventEmitter->onPageScrollStateChanged(event);
+        } else {
+            this->m_nativeLock = false;
+            this->getLocalRootArkUINode().setDisableSwipe(false);
+        }
     }
 
 } // namespace rnoh/
