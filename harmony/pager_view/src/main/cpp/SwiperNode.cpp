@@ -24,7 +24,7 @@ namespace rnoh {
 
 
     void SwiperNode::insertChild(ArkUINode &child, std::size_t index) {
-        maybeThrow(NativeNodeApi::getInstance()->addChild(m_nodeHandle, child.getArkUINodeHandle()));                                  
+        maybeThrow(NativeNodeApi::getInstance()->insertChildAt(m_nodeHandle, child.getArkUINodeHandle(),index));                                  
     }
 
     void SwiperNode::removeChild(ArkUINode &child) {
