@@ -49,5 +49,5 @@ namespace rnoh {
         void setKeyboardDismiss() override;
     
         void setNativeResponderBlocked(bool blocked) override;
-    };
+     };
 } // namespace rnoh

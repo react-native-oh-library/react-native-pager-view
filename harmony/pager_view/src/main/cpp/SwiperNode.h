@@ -32,7 +32,7 @@ namespace rnoh {
     class SwiperNode : public ArkUINode {
     protected:
         SwiperNodeDelegate *m_swiperNodeDelegate;
-
+        ArkUI_NodeHandle m_stackArkUINodeHandle;
     public:
         SwiperNode();
     
@@ -52,7 +52,7 @@ namespace rnoh {
     
         SwiperNode &setDirection(std::string const &layoutDirection);
     
-        SwiperNode &setItemSpace(int const &pageMargin);
+        SwiperNode &setItemSpace(float const &pageMargin);
     
         SwiperNode &setCachedCount(int const &offscreenPageLimit);
     

@@ -34,7 +34,6 @@ namespace rnoh {
          this->getLocalRootArkUINode().setLoop(false);
          this->getLocalRootArkUINode().setIndicator(false);
          this->getLocalRootArkUINode().setDuration(100);
-         this->getLocalRootArkUINode().setCurve(ARKUI_CURVE_LINEAR);
          if(props->overdrag){
                this->getLocalRootArkUINode().setEffectMode("SPRING");
          }
@@ -132,6 +131,5 @@ namespace rnoh {
             this->getLocalRootArkUINode().setDisableSwipe(false);
         }
     }
-
 
 } // namespace rnoh/

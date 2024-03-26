@@ -7,7 +7,7 @@ namespace rnoh {
 
     SwiperNode::SwiperNode()
         : ArkUINode(NativeNodeApi::getInstance()->createNode(ArkUI_NodeType::ARKUI_NODE_SWIPER)),
-          m_swiperNodeDelegate(nullptr) {
+          m_stackArkUINodeHandle(nullptr),m_swiperNodeDelegate(nullptr) {
         maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_ANIMATION_START, 0));
         maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_ANIMATION_END, 1));
         maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_CHANGE, 2));
@@ -24,11 +24,13 @@ namespace rnoh {
 
 
     void SwiperNode::insertChild(ArkUINode &child, std::size_t index) {
-        maybeThrow(NativeNodeApi::getInstance()->insertChildAt(m_nodeHandle, child.getArkUINodeHandle(),index));                                  
+        m_stackArkUINodeHandle = NativeNodeApi::getInstance()->createNode(ArkUI_NodeType::ARKUI_NODE_STACK);
+        NativeNodeApi::getInstance()->addChild(m_nodeHandle, m_stackArkUINodeHandle);
+        NativeNodeApi::getInstance()->insertChildAt(m_stackArkUINodeHandle, child.getArkUINodeHandle(),index);
     }
 
     void SwiperNode::removeChild(ArkUINode &child) {
-        maybeThrow(NativeNodeApi::getInstance()->removeChild(m_nodeHandle, child.getArkUINodeHandle()));
+        maybeThrow(NativeNodeApi::getInstance()->removeChild(m_stackArkUINodeHandle, child.getArkUINodeHandle()));
     }
 
     void SwiperNode::setSwiperNodeDelegate(SwiperNodeDelegate *swiperNodeDelegate) {
@@ -120,8 +122,8 @@ namespace rnoh {
         return *this;
     }
 
-   SwiperNode &SwiperNode::setItemSpace(int const &pageMargin) { 
-        ArkUI_NumberValue indexValue[] = {{.i32 = pageMargin}};
+   SwiperNode &SwiperNode::setItemSpace(float  const &pageMargin) { 
+        ArkUI_NumberValue indexValue[] = {{.f32 = pageMargin}};
         ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
         maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_SWIPER_ITEM_SPACE,&indexItem));
         return *this;
