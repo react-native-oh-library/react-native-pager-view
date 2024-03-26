@@ -21,5 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export * from './src/main/ets/RNCViewPager'
-export * from './ts'
+
+#pragma once
+
+#include <ReactCommon/TurboModule.h>
+#include "RNOH/ArkTSTurboModule.h"
+
+namespace rnoh {
+
+    class JSI_EXPORT RNCViewPagerTurbomodule : public ArkTSTurboModule {
+    public:
+        RNCViewPagerTurbomodule(const ArkTSTurboModule::Context ctx, const std::string name);
+    };
+
+} // namespace rnoh

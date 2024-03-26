@@ -40,6 +40,7 @@ namespace rnoh {
         LOG(INFO) << "onNodeEvent-->start";
         if (event->kind == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_ANIMATION_START) {
                LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_ANIMATION_START";
+               m_swiperNodeDelegate->setKeyboardDismiss();
                facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged event = {
                     facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChangedPageScrollState::Settling};
                m_swiperNodeDelegate->onPageScrollStateChanged(event);

@@ -4,10 +4,10 @@
 
   },
   "author": "",
-  "name": "pager_view",
+  "name": "rnoh-pager-view",
   "description": "Please describe the basic information.",
   "main": "index.ets",
-  "version": "6.2.3-0.1.9",
+  "version": "6.2.3-0.1.10",
   "dependencies": {
     "rnoh": "file:../rnoh"
   }

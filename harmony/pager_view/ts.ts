@@ -21,5 +21,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export * from './src/main/ets/RNCViewPager'
-export * from './ts'
+
+export * from "./src/main/ets/ViewPagerModule"
+export * from "./src/main/ets/ViewPagerPackage"

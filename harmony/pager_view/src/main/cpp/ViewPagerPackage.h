@@ -29,6 +29,7 @@
 #include "ViewPagerNapiBinder.h"
 #include "ViewPagerEventEmitRequestHandler.h"
 #include "ViewPagerComponentInstance.h"
+#include "RNCViewPagerTurbomodule.h"
 
 using namespace rnoh;
 using namespace facebook;
@@ -46,12 +47,27 @@ namespace rnoh{
         }
     };
 
+
+    class RNCViewPagerContextFactoryDelegate : public TurboModuleFactoryDelegate {
+    public:
+        SharedTurboModule createTurboModule(Context ctx, const std::string &name) const override {
+            if (name == "RNCViewPagerContext") {
+                return std::make_shared<RNCViewPagerTurbomodule>(ctx, name);
+            }
+            return nullptr;
+        };
+    };
+
   class ViewPagerPackage : public Package{
     public:
       ViewPagerPackage(Package::Context ctx) : Package(ctx){}
 
       ComponentInstanceFactoryDelegate::Shared createComponentInstanceFactoryDelegate() override {
-            return std::make_shared<ViewPagerPackageComponentInstanceFactoryDelegate>(m_ctx);
+            return std::make_shared<ViewPagerPackageComponentInstanceFactoryDelegate>();
+      }
+
+      std::unique_ptr<TurboModuleFactoryDelegate> createTurboModuleFactoryDelegate() override {
+            return std::make_unique<RNCViewPagerContextFactoryDelegate>();
       }
 
       std::vector<facebook::react::ComponentDescriptorProvider> createComponentDescriptorProviders() override
