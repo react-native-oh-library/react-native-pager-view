@@ -25,8 +25,6 @@ namespace rnoh {
         virtual int getLayoutMetricsWidth(){
           return 0;   
         }
-    
-        virtual void setKeyboardDismiss(){};
     };
 
     class SwiperNode : public ArkUINode {

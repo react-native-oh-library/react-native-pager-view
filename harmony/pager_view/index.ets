@@ -22,4 +22,3 @@
  * SOFTWARE.
  */
 export * from './src/main/ets/RNCViewPager'
-export * from './ts'
