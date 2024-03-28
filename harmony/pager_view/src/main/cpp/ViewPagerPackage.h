@@ -28,14 +28,31 @@
 #include "ViewPagerJSIBinder.h"
 #include "ViewPagerNapiBinder.h"
 #include "ViewPagerEventEmitRequestHandler.h"
+#include "ViewPagerComponentInstance.h"
 
 using namespace rnoh;
 using namespace facebook;
 namespace rnoh{
 
+    class ViewPagerPackageComponentInstanceFactoryDelegate : public ComponentInstanceFactoryDelegate {
+    public:
+        using ComponentInstanceFactoryDelegate::ComponentInstanceFactoryDelegate;
+
+        ComponentInstance::Shared create(ComponentInstance::Context ctx) override {
+            if (ctx.componentName == "RNCViewPager") {
+                return std::make_shared<ViewPagerComponentInstance>(std::move(ctx));
+            }
+            return nullptr;
+        }
+    };
+
   class ViewPagerPackage : public Package{
     public:
       ViewPagerPackage(Package::Context ctx) : Package(ctx){}
+
+      ComponentInstanceFactoryDelegate::Shared createComponentInstanceFactoryDelegate() override {
+            return std::make_shared<ViewPagerPackageComponentInstanceFactoryDelegate>(m_ctx);
+      }
 
       std::vector<facebook::react::ComponentDescriptorProvider> createComponentDescriptorProviders() override
       {
