@@ -8,71 +8,60 @@ namespace rnoh {
         m_swiperNode.setSwiperNodeDelegate(this);
     }
 
-    void ViewPagerComponentInstance::insertChild(ComponentInstance::Shared childComponentInstance, std::size_t index) {
-        CppComponentInstance::insertChild(childComponentInstance, index);
+    void ViewPagerComponentInstance::onChildInserted(ComponentInstance::Shared const &childComponentInstance, std::size_t index) {
+        CppComponentInstance::onChildInserted(childComponentInstance, index);
         m_swiperNode.insertChild(childComponentInstance->getLocalRootArkUINode(), index);
     }
 
     SwiperNode &ViewPagerComponentInstance::getLocalRootArkUINode() { return m_swiperNode; }
 
-    void ViewPagerComponentInstance::removeChild(ComponentInstance::Shared childComponentInstance) {
-        CppComponentInstance::removeChild(childComponentInstance);
+    void ViewPagerComponentInstance::onChildRemoved(ComponentInstance::Shared const &childComponentInstance) {
+        CppComponentInstance::onChildRemoved(childComponentInstance);
         m_swiperNode.removeChild(childComponentInstance->getLocalRootArkUINode());
     };
 
-    void ViewPagerComponentInstance::setProps(facebook::react::Props::Shared props) {
-        CppComponentInstance::setProps(props);
-        if (auto p = std::dynamic_pointer_cast<const facebook::react::RNCViewPagerProps>(props)) {
-            this->m_scrollEnabled = p->scrollEnabled;
-            this->m_pageIndex = p->initialPage;
-            LOG(INFO) << "ViewPagerComponentInstance::setProps: " << p->initialPage;
-            this->getLocalRootArkUINode().setIndex(p->initialPage);
-            this->getLocalRootArkUINode().setVertical(p->orientation);
-            this->getLocalRootArkUINode().setDirection(p->layoutDirection);
-            this->getLocalRootArkUINode().setItemSpace(p->pageMargin);
-            this->getLocalRootArkUINode().setDisableSwipe(!p->scrollEnabled);
-            this->getLocalRootArkUINode().setLoop(false);
-            this->getLocalRootArkUINode().setIndicator(false);
-            this->getLocalRootArkUINode().setDuration(100);
-            if(p->overdrag){
+    void ViewPagerComponentInstance::onPropsChanged(SharedConcreteProps const &props) {
+        CppComponentInstance::onPropsChanged(props);
+         this->m_scrollEnabled = props->scrollEnabled;
+         this->m_pageIndex = props->initialPage;
+         this->m_keyboardDismissMode = props->keyboardDismissMode;
+         LOG(INFO) << "ViewPagerComponentInstance::setProps: " << props->initialPage;
+         this->getLocalRootArkUINode().setIndex(props->initialPage);
+         this->getLocalRootArkUINode().setVertical(props->orientation);
+         this->getLocalRootArkUINode().setDirection(props->layoutDirection);
+         this->getLocalRootArkUINode().setItemSpace(props->pageMargin);
+         this->getLocalRootArkUINode().setDisableSwipe(!props->scrollEnabled);
+         this->getLocalRootArkUINode().setLoop(false);
+         this->getLocalRootArkUINode().setIndicator(false);
+         this->getLocalRootArkUINode().setDuration(100);
+         if(props->overdrag){
                this->getLocalRootArkUINode().setEffectMode("SPRING");
-            }
-            else{
-               if(p->overScrollMode == "never"){
+         }
+         else{
+             if(props->overScrollMode == "never"){
                    this->getLocalRootArkUINode().setEffectMode("NONE");
-                }
-               else{
+             }
+             else{
                    this->getLocalRootArkUINode().setEffectMode("FADE");                 
-               }
-            }
-        }
-    }
-
-    void ViewPagerComponentInstance::setEventEmitter(facebook::react::SharedEventEmitter eventEmitter) {
-        ComponentInstance::setEventEmitter(eventEmitter);
-        auto viewPagerEventEmitter =
-            std::dynamic_pointer_cast<const facebook::react::RNCViewPagerEventEmitter>(eventEmitter);
-        if (viewPagerEventEmitter == nullptr) {
-            return;
-        }
-        m_viewPagerEventEmitter = viewPagerEventEmitter;
+             }
+         }
     }
 
     void ViewPagerComponentInstance::onPageSelected(double pageIndex) {
         this->m_pageIndex = pageIndex;
         LOG(INFO) << "ViewPagerComponentInstance::onPageSelected:" << pageIndex ;
         facebook::react::RNCViewPagerEventEmitter::OnPageSelected event = {pageIndex};
-        m_viewPagerEventEmitter->onPageSelected(event); 
+        m_eventEmitter->onPageSelected(event); 
     }
 
     void ViewPagerComponentInstance::onPageScroll(facebook::react::RNCViewPagerEventEmitter::OnPageScroll pageScroll) {
         LOG(INFO) << "ViewPagerComponentInstance::onPageScroll" ;
-        m_viewPagerEventEmitter->onPageScroll(pageScroll);
+        m_eventEmitter->onPageScroll(pageScroll);
     }
 
     void ViewPagerComponentInstance::onPageScrollStateChanged(facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged value) {
         LOG(INFO) << "ViewPagerComponentInstance::onPageScrollStateChanged" ;
-        m_viewPagerEventEmitter->onPageScrollStateChanged(value);
+        m_eventEmitter->onPageScrollStateChanged(value);
     }
 
     void ViewPagerComponentInstance::handleCommand(std::string const &commandName, folly::dynamic const &args) {
@@ -84,7 +73,7 @@ namespace rnoh {
             if(!args[0].asBool()){
                facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged event = {
                       facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChangedPageScrollState::Idle};
-               m_viewPagerEventEmitter->onPageScrollStateChanged(event);
+               m_eventEmitter->onPageScrollStateChanged(event);
             }
         }
         else if (commandName == "setPage" && args.isArray() && args.size() == 1){
@@ -117,15 +106,27 @@ namespace rnoh {
        return this->m_layoutMetrics.frame.size.width;
     }
 
+    void ViewPagerComponentInstance::setKeyboardDismiss() {
+        LOG(INFO) << "ViewPagerComponentInstance::setKeyboardDismiss: " << this->m_keyboardDismissMode ;
+        if (this->m_keyboardDismissMode != "on-drag") return;
+        auto rnInstancePtr =this->m_deps->rnInstance.lock();
+        if (rnInstancePtr != nullptr) {
+            auto turboModule = rnInstancePtr->getTurboModule("RNCViewPagerContext");
+            auto arkTsTurboModule = std::dynamic_pointer_cast<rnoh::ArkTSTurboModule>(turboModule);
+            arkTsTurboModule->callSync("keyboardDismiss", {});
+        }
+    }
+
     void ViewPagerComponentInstance::setNativeResponderBlocked(bool blocked) {
         LOG(INFO) << "ViewPagerComponentInstance::setNativeResponderBlocked:" << blocked;
-        if (blocked) {
+        if(blocked){
             this->m_nativeLock = true;
             this->getLocalRootArkUINode().setDisableSwipe(true);
             facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged event = {
-                facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChangedPageScrollState::Idle};
-            m_viewPagerEventEmitter->onPageScrollStateChanged(event);
-        } else {
+              facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChangedPageScrollState::Idle};
+            m_eventEmitter->onPageScrollStateChanged(event);
+        }
+        else{
             this->m_nativeLock = false;
             this->getLocalRootArkUINode().setDisableSwipe(false);
         }

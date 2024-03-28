@@ -42,6 +42,7 @@ namespace rnoh {
         LOG(INFO) << "onNodeEvent-->start";
         if (event->kind == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_ANIMATION_START) {
                LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_ANIMATION_START";
+               m_swiperNodeDelegate->setKeyboardDismiss();
                facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged event = {
                     facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChangedPageScrollState::Settling};
                m_swiperNodeDelegate->onPageScrollStateChanged(event);
@@ -67,7 +68,7 @@ namespace rnoh {
         else if (event->kind == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_GESTURE_SWIPE) {
                 LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_GESTURE_SWIPE";
                if(!m_swiperNodeDelegate->getScrollEnabled() || m_swiperNodeDelegate->getNativeLock()) return;
-               int offset = 0;
+               double  offset = 0;
                int finalIndex = event->componentEvent.data[0].i32;
                float currentOffset = event->componentEvent.data[1].f32;
                if (finalIndex == 0 && abs(currentOffset) < 22) {
@@ -91,7 +92,7 @@ namespace rnoh {
                    finalIndex = finalIndex - 1;
                }
                facebook::react::RNCViewPagerEventEmitter::OnPageScroll m_onPageScroll = {
-                      static_cast<double>(finalIndex),static_cast<double>(offset)};                    
+                      static_cast<double>(finalIndex),offset};                    
                m_swiperNodeDelegate->onPageScroll(m_onPageScroll);
         } 
     }
