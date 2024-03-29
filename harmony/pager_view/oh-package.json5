@@ -4,10 +4,10 @@
 
   },
   "author": "",
-  "name": "rnoh-pager-view",
-  "description": "Please describe the basic information.",
+  "name": "@react-native-oh-tpl/react-native-pager-view",
+  "description": "c-api-foundation",
   "main": "index.ets",
-  "version": "6.2.3-0.1.0",
+  "version": "6.2.3-0.1.1",
   "dependencies": {
     "rnoh": "file:../rnoh"
   }
