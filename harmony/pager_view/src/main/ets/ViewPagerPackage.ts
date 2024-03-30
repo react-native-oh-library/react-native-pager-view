@@ -21,5 +21,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export * from './src/main/ets/RNCViewPager'
-export * from './ts'
+
+import { RNPackage, TurboModulesFactory } from 'rnoh/ts';
+import type { TurboModule, TurboModuleContext } from 'rnoh/ts';
+import { ViewPagerModule } from './ViewPagerModule';
+
+class ViewPagerTurboModulesFactory extends TurboModulesFactory {
+  createTurboModule(name: string): TurboModule | null {
+    if (name === 'RNCViewPagerContext') {
+      return new ViewPagerModule(this.ctx);
+    }
+    return null;
+  }
+
+  hasTurboModule(name: string): boolean {
+    return name === 'RNCViewPagerContext';
+  }
+}
+
+export class ViewPagerPackage extends RNPackage {
+  createTurboModulesFactory(ctx: TurboModuleContext): TurboModulesFactory {
+    return new ViewPagerTurboModulesFactory(ctx);
+  }
+}

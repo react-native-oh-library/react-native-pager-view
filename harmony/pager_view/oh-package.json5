@@ -4,10 +4,10 @@
 
   },
   "author": "",
-  "name": "rnoh-pager-view",
-  "description": "Please describe the basic information.",
+  "name": "@react-native-oh-tpl/react-native-pager-view",
+  "description": "React Native wrapper for Android and iOS ViewPager",
   "main": "index.ets",
-  "version": "6.2.3-0.0.9",
+  "version": "6.2.3-0.1.13",
   "dependencies": {
     "rnoh": "file:../rnoh"
   }
