@@ -5,7 +5,7 @@
   },
   "author": "",
   "name": "@react-native-oh-tpl/react-native-pager-view",
-  "description": "React Native wrapper for Android and iOS ViewPager",
+  "description": "React Native wrapper for HarmonyOS ViewPager",
   "main": "index.ets",
   "version": "6.2.3-0.1.13",
   "dependencies": {
