@@ -72,6 +72,6 @@ namespace rnoh {
     
         void setKeyboardDismiss() override;
     
-        void setNativeResponderBlocked(bool blocked) override;
+       void onNativeResponderBlockChange(bool isBlocked) override;
      };
 } // namespace rnoh

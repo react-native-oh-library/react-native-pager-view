@@ -141,9 +141,9 @@ namespace rnoh {
         }
     }
 
-    void ViewPagerComponentInstance::setNativeResponderBlocked(bool blocked) {
-        LOG(INFO) << "ViewPagerComponentInstance::setNativeResponderBlocked:" << blocked;
-        if(blocked){
+    void ViewPagerComponentInstance::onNativeResponderBlockChange(bool isBlocked) {
+        LOG(INFO) << "ViewPagerComponentInstance::setNativeResponderBlocked:" << isBlocked;
+        if(isBlocked){
             this->m_nativeLock = true;
             this->getLocalRootArkUINode().setDisableSwipe(true);
             facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged event = {
