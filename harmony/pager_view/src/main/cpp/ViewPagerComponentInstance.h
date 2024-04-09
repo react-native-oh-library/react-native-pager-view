@@ -62,7 +62,7 @@ namespace rnoh {
 
         void handleCommand(std::string const &commandName, folly::dynamic const &args) override;
     
-        std::vector<TouchTarget::Shared> getTouchTargetChildren() const override;
+        std::vector<TouchTarget::Shared> getTouchTargetChildren() override;
     
         bool getScrollEnabled() override;
     

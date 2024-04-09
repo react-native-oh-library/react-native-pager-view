@@ -119,7 +119,7 @@ namespace rnoh {
        return this->m_nativeLock;
     }
 
-    std::vector<TouchTarget::Shared> ViewPagerComponentInstance::getTouchTargetChildren() const {
+    std::vector<TouchTarget::Shared> ViewPagerComponentInstance::getTouchTargetChildren() {
         auto children = getChildren();
         std::vector<TouchTarget::Shared> result(1);
         result.push_back(children.at(m_pageIndex));
