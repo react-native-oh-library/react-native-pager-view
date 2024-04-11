@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-import { RNOHContext,RNViewManager,Tag } from 'rnoh';
+import { RNOHContext,RNViewManager,Tag } from '@rnoh/react-native-openharmony';
 import {ViewPagerDescriptor} from './RNCViewPager';
 import Logger from './Logger';
 

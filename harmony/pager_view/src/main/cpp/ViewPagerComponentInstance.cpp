@@ -1,3 +1,27 @@
+/**
+ * MIT License
+ *
+ * Copyright (C) 2024 Huawei Device Co., Ltd.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 #include "ViewPagerComponentInstance.h"
 #include "Props.h"
 
@@ -95,7 +119,7 @@ namespace rnoh {
        return this->m_nativeLock;
     }
 
-    std::vector<TouchTarget::Shared> ViewPagerComponentInstance::getTouchTargetChildren() const {
+    std::vector<TouchTarget::Shared> ViewPagerComponentInstance::getTouchTargetChildren() {
         auto children = getChildren();
         std::vector<TouchTarget::Shared> result(1);
         result.push_back(children.at(m_pageIndex));
@@ -117,9 +141,9 @@ namespace rnoh {
         }
     }
 
-    void ViewPagerComponentInstance::setNativeResponderBlocked(bool blocked) {
-        LOG(INFO) << "ViewPagerComponentInstance::setNativeResponderBlocked:" << blocked;
-        if(blocked){
+    void ViewPagerComponentInstance::onNativeResponderBlockChange(bool isBlocked) {
+        LOG(INFO) << "ViewPagerComponentInstance::setNativeResponderBlocked:" << isBlocked;
+        if(isBlocked){
             this->m_nativeLock = true;
             this->getLocalRootArkUINode().setDisableSwipe(true);
             facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged event = {

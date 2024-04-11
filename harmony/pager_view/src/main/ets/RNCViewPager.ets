@@ -31,7 +31,7 @@ import {
   RNComponentFactory,
   Tag,
   RNOHComponentCommand
-} from 'rnoh'
+} from '@rnoh/react-native-openharmony'
 import inputMethod from '@ohos.inputMethod';
 import { RNCViewPagerManager } from './RNCViewPagerManager';
 import Logger from './Logger';
@@ -86,7 +86,7 @@ export struct RNCViewPager {
     )
     this.pageIndex = this.descriptor.props.initialPage
     this.pageScrollEnabled = this.descriptor.props.scrollEnabled
-    this.cleanupCommandCallback = this.ctx.commandDispatcher.registerCommandCallback(
+    this.cleanupCommandCallback = this.ctx.componentCommandReceiver.registerCommandCallback(
       this.tag,
       (command, args: (boolean | number)[]) => {
         if (command === 'setPage') {
