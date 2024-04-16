@@ -21,5 +21,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export * from './src/main/ets/RNCViewPager'
-export * from './ts'
+
+#include "RNCViewPagerTurbomodule.h"
+
+using namespace rnoh;
+using namespace facebook;
+
+static jsi::Value __hostFunction_RNCViewPagerTurbomodule_keyboardDismiss(jsi::Runtime &rt,
+                                                                            react::TurboModule &turboModule,
+                                                                            const jsi::Value *args, size_t count)
+{
+    return static_cast<ArkTSTurboModule &>(turboModule).call(rt, "keyboardDismiss", args, count);
+}
+
+RNCViewPagerTurbomodule::RNCViewPagerTurbomodule(const ArkTSTurboModule::Context ctx,
+                                                             const std::string name)
+    : ArkTSTurboModule(ctx, name)
+{
+    methodMap_["keyboardDismiss"] = MethodMetadata{0, __hostFunction_RNCViewPagerTurbomodule_keyboardDismiss};
+}

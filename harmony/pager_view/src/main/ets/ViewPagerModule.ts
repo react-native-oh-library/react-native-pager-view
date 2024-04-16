@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (C) 2023 Huawei Device Co., Ltd.
+ * Copyright (C) 2024 Huawei Device Co., Ltd.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,5 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-export * from './src/main/ets/RNCViewPager'
-export * from './ts'
+import { TurboModule } from "@rnoh/react-native-openharmony/ts";
+import inputMethod from '@ohos.inputMethod';
+
+export class ViewPagerModule extends TurboModule {
+
+  keyboardDismiss(): void {
+    let inputMethodController = inputMethod.getInputMethodController();
+    inputMethodController.stopInputSession()
+  }
+
+}
