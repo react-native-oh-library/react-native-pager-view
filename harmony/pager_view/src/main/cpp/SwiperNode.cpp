@@ -32,10 +32,10 @@ namespace rnoh {
     SwiperNode::SwiperNode()
         : ArkUINode(NativeNodeApi::getInstance()->createNode(ArkUI_NodeType::ARKUI_NODE_SWIPER)),
           m_stackArkUINodeHandle(nullptr),m_swiperNodeDelegate(nullptr) {
-        maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_ANIMATION_START, NODE_SWIPER_EVENT_ON_ANIMATION_START,this));
-        maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_ANIMATION_END,NODE_SWIPER_EVENT_ON_ANIMATION_END, this));
-        maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_CHANGE, NODE_SWIPER_EVENT_ON_CHANGE,this));
-        maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_GESTURE_SWIPE, NODE_SWIPER_EVENT_ON_GESTURE_SWIPE,this));
+        maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_ANIMATION_START, 0));
+        maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_ANIMATION_END, 1));
+        maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_CHANGE, 2));
+        maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_GESTURE_SWIPE, 3));
     }
 
 
@@ -61,40 +61,40 @@ namespace rnoh {
         m_swiperNodeDelegate = swiperNodeDelegate;
     }
 
-    void SwiperNode::onNodeEvent(ArkUI_NodeEventType eventType, EventArgs& eventArgs) {
+    void SwiperNode::onNodeEvent(ArkUI_NodeEvent *event) {
         if (m_swiperNodeDelegate == nullptr) return; 
         LOG(INFO) << "onNodeEvent-->start";
-        if (eventType == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_ANIMATION_START) {
+        if (event->kind == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_ANIMATION_START) {
                LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_ANIMATION_START";
                m_swiperNodeDelegate->setKeyboardDismiss();
                facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged event = {
                     facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChangedPageScrollState::Settling};
                m_swiperNodeDelegate->onPageScrollStateChanged(event);
         }
-        else if (eventType == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_ANIMATION_END) {
-                LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_ANIMATION_END: " << eventArgs[0].i32;
+        else if (event->kind == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_ANIMATION_END) {
+                LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_ANIMATION_END: " << event->componentEvent.data[0].i32;
                 this->setDuration(100);
                 facebook::react::RNCViewPagerEventEmitter::OnPageScroll m_onPageScroll = {
-                      static_cast<double>(eventArgs[0].i32),0};
+                      static_cast<double>(event->componentEvent.data[0].i32),0};
                 m_swiperNodeDelegate->onPageScroll(m_onPageScroll);
                 facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged pageScrollStateChange = {
                       facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChangedPageScrollState::Idle};   
                 m_swiperNodeDelegate->onPageScrollStateChanged(pageScrollStateChange);
             
         }
-        else if (eventType == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_CHANGE) {
-                LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_CHANGE: " << eventArgs[0].i32;
-                m_swiperNodeDelegate->onPageSelected(eventArgs[0].i32);
+        else if (event->kind == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_CHANGE) {
+                LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_CHANGE: " << event->componentEvent.data[0].i32;
+                m_swiperNodeDelegate->onPageSelected(event->componentEvent.data[0].i32);
                 facebook::react::RNCViewPagerEventEmitter::OnPageScroll m_onPageScroll = {
-                      static_cast<double>(eventArgs[0].i32),0};
+                      static_cast<double>(event->componentEvent.data[0].i32),0};
                 m_swiperNodeDelegate->onPageScroll(m_onPageScroll);
         }
-        else if (eventType == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_GESTURE_SWIPE) {
+        else if (event->kind == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_GESTURE_SWIPE) {
                 LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_GESTURE_SWIPE";
                if(!m_swiperNodeDelegate->getScrollEnabled() || m_swiperNodeDelegate->getNativeLock()) return;
                double  offset = 0;
-               int finalIndex = eventArgs[0].i32;
-               float currentOffset = eventArgs[1].f32;
+               int finalIndex = event->componentEvent.data[0].i32;
+               float currentOffset = event->componentEvent.data[1].f32;
                if (finalIndex == 0 && abs(currentOffset) < 22) {
                   return;
                }                    

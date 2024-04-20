@@ -68,7 +68,7 @@ namespace rnoh {
 
         void removeChild(ArkUINode &child);
 
-        void onNodeEvent(ArkUI_NodeEventType eventType, EventArgs& eventArgs) override;
+        void onNodeEvent(ArkUI_NodeEvent *event) override;
 
         SwiperNode &setIndex(int const &initialPage);
     
