@@ -42,6 +42,8 @@ namespace rnoh {
         bool m_nativeLock;
 
         std::string m_keyboardDismissMode;
+    
+        bool m_needSetProps = true;
 
     public:
         ViewPagerComponentInstance(Context context);

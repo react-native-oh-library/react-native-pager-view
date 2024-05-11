@@ -156,7 +156,7 @@ namespace rnoh {
    SwiperNode &SwiperNode::setCachedCount(int const &offscreenPageLimit) { 
         ArkUI_NumberValue indexValue[] = {{.i32 = offscreenPageLimit}};
         ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
-        maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_SWIPER_DISPLAY_COUNT,&indexItem));
+        maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_SWIPER_CACHED_COUNT,&indexItem));
         return *this;    
     }
 

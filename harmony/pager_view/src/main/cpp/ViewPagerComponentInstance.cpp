@@ -46,10 +46,14 @@ namespace rnoh {
 
     void ViewPagerComponentInstance::onPropsChanged(SharedConcreteProps const &props) {
         CppComponentInstance::onPropsChanged(props);
+         LOG(INFO) << "ViewPagerComponentInstance::m_needSetProps: " << this->m_needSetProps << " initialPage:" << props->initialPage;
+         if(!this->m_needSetProps){
+             this->m_needSetProps=true;
+             return;
+         }
          this->m_scrollEnabled = props->scrollEnabled;
          this->m_pageIndex = props->initialPage;
          this->m_keyboardDismissMode = props->keyboardDismissMode;
-         LOG(INFO) << "ViewPagerComponentInstance::setProps: " << props->initialPage;
          this->getLocalRootArkUINode().setIndex(props->initialPage);
          this->getLocalRootArkUINode().setVertical(props->orientation);
          this->getLocalRootArkUINode().setDirection(props->layoutDirection);
@@ -58,6 +62,7 @@ namespace rnoh {
          this->getLocalRootArkUINode().setLoop(false);
          this->getLocalRootArkUINode().setIndicator(false);
          this->getLocalRootArkUINode().setDuration(100);
+         this->getLocalRootArkUINode().setCachedCount(props->offscreenPageLimit);
          if(props->overdrag){
                this->getLocalRootArkUINode().setEffectMode("SPRING");
          }
@@ -102,11 +107,15 @@ namespace rnoh {
         }
         else if (commandName == "setPage" && args.isArray() && args.size() == 1){
             LOG(INFO) << "handleCommand-->setPage: " << args[0];
-            this->getLocalRootArkUINode().setIndex(args[0].asInt());
+            this->m_needSetProps = false;
+            this->m_pageIndex = args[0].asInt();
+            this->getLocalRootArkUINode().setIndex(this->m_pageIndex);
         }
         else if (commandName == "setPageWithoutAnimation" && args.isArray() && args.size() == 1){
             LOG(INFO) << "handleCommand-->setPageWithoutAnimation: " << args[0];
-            this->getLocalRootArkUINode().setIndex(args[0].asInt());
+            this->m_needSetProps = false;
+            this->m_pageIndex = args[0].asInt();
+            this->getLocalRootArkUINode().setIndex(this->m_pageIndex);
             this->getLocalRootArkUINode().setDuration(0);
         }
     }
