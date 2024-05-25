@@ -57,6 +57,7 @@ namespace rnoh {
     protected:
         SwiperNodeDelegate *m_swiperNodeDelegate;
         ArkUI_NodeHandle m_stackArkUINodeHandle;
+        double m_targetIndex;
     public:
         SwiperNode();
     

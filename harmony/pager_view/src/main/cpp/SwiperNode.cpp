@@ -35,7 +35,7 @@ namespace rnoh {
         maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_ANIMATION_START, NODE_SWIPER_EVENT_ON_ANIMATION_START,this));
         maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_ANIMATION_END,NODE_SWIPER_EVENT_ON_ANIMATION_END, this));
         maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_CHANGE, NODE_SWIPER_EVENT_ON_CHANGE,this));
-        maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_GESTURE_SWIPE, NODE_SWIPER_EVENT_ON_GESTURE_SWIPE,this));
+        maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_CONTENT_DID_SCROLL, NODE_SWIPER_EVENT_ON_CONTENT_DID_SCROLL,this));
     }
 
 
@@ -43,7 +43,7 @@ namespace rnoh {
         NativeNodeApi::getInstance()->unregisterNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_ANIMATION_START);
         NativeNodeApi::getInstance()->unregisterNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_ANIMATION_END);
         NativeNodeApi::getInstance()->unregisterNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_CHANGE);
-        NativeNodeApi::getInstance()->unregisterNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_GESTURE_SWIPE);
+        NativeNodeApi::getInstance()->unregisterNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_CONTENT_DID_SCROLL);
     }
 
 
@@ -65,7 +65,8 @@ namespace rnoh {
         if (m_swiperNodeDelegate == nullptr) return; 
         LOG(INFO) << "onNodeEvent-->start";
         if (eventType == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_ANIMATION_START) {
-               LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_ANIMATION_START";
+              this->m_targetIndex = eventArgs[1].i32;
+               LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_ANIMATION_START m_currentIndex:"<< eventArgs[0].i32 << " m_targetIndex:" << this->m_targetIndex;
                m_swiperNodeDelegate->setKeyboardDismiss();
                facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged event = {
                     facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChangedPageScrollState::Settling};
@@ -73,14 +74,12 @@ namespace rnoh {
         }
         else if (eventType == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_ANIMATION_END) {
                 LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_ANIMATION_END: " << eventArgs[0].i32;
-                this->setDuration(100);
                 facebook::react::RNCViewPagerEventEmitter::OnPageScroll m_onPageScroll = {
                       static_cast<double>(eventArgs[0].i32),0};
                 m_swiperNodeDelegate->onPageScroll(m_onPageScroll);
                 facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged pageScrollStateChange = {
                       facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChangedPageScrollState::Idle};   
                 m_swiperNodeDelegate->onPageScrollStateChanged(pageScrollStateChange);
-            
         }
         else if (eventType == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_CHANGE) {
                 LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_CHANGE: " << eventArgs[0].i32;
@@ -89,35 +88,50 @@ namespace rnoh {
                       static_cast<double>(eventArgs[0].i32),0};
                 m_swiperNodeDelegate->onPageScroll(m_onPageScroll);
         }
-        else if (eventType == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_GESTURE_SWIPE) {
-                LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_GESTURE_SWIPE";
+        else if (eventType == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_CONTENT_DID_SCROLL) {
+               LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_CONTENT_DID_SCROLL getScrollEnabled:" 
+                 << m_swiperNodeDelegate->getScrollEnabled() << " getNativeLock:"<< m_swiperNodeDelegate->getNativeLock();
                if(!m_swiperNodeDelegate->getScrollEnabled() || m_swiperNodeDelegate->getNativeLock()) return;
-               double  offset = 0;
-               int finalIndex = eventArgs[0].i32;
-               float currentOffset = eventArgs[1].f32;
-               if (finalIndex == 0 && abs(currentOffset) < 22) {
-                  return;
-               }                    
-               facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged event = {
-                    facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChangedPageScrollState::Dragging};
-               m_swiperNodeDelegate->onPageScrollStateChanged(event); 
-               int m_LayoutMetricsWidth = m_swiperNodeDelegate->getLayoutMetricsWidth();
-               if (currentOffset < 0) {
-                   offset = abs(currentOffset / m_LayoutMetricsWidth);
-               } else { 
-                  finalIndex = (finalIndex - 1) > 0 ? (finalIndex - 1) : 0;
-                  offset = 1 - abs(currentOffset / m_LayoutMetricsWidth);
-               }
-               if (offset > 1) {
-                   offset = offset - 1;
-                   finalIndex = finalIndex + 1;
-               } else if (offset < 0 && finalIndex >= 1) {
-                   offset = offset + 1;
-                   finalIndex = finalIndex - 1;
-               }
-               facebook::react::RNCViewPagerEventEmitter::OnPageScroll m_onPageScroll = {
-                      static_cast<double>(finalIndex),offset};                    
-               m_swiperNodeDelegate->onPageScroll(m_onPageScroll);
+               LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_CONTENT_DID_SCROLL selectedIndex:" << eventArgs[0].i32 << " index:" 
+                 << eventArgs[1].i32 << "position:" << eventArgs[2].f32;
+               double selectedIndex = eventArgs[0].i32;
+               double index = eventArgs[1].i32;
+               if(selectedIndex != index){
+                  double offset;
+                  if((selectedIndex > index) && ((selectedIndex - index) == 1)){
+                      offset = -eventArgs[2].f32;
+                      if(selectedIndex >= 1){
+                        selectedIndex=selectedIndex-1;
+                      }
+                      if(offset < 0.0202){
+                        m_swiperNodeDelegate->onPageSelected(this->m_targetIndex);
+                      }
+                      if(offset < 0){
+                         offset = 0;
+                      }
+                     LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_CONTENT_DID_SCROLL right selectedIndex:" << selectedIndex << " offset:" << offset;
+                      facebook::react::RNCViewPagerEventEmitter::OnPageScroll m_onPageScroll = {
+                       selectedIndex,offset};                    
+                      m_swiperNodeDelegate->onPageScroll(m_onPageScroll);
+                  }
+                  else if((index - selectedIndex) == 1){
+                       if(eventArgs[2].f32 <= 0){
+                          eventArgs[2].f32 = 0;
+                       }
+                       offset = 1 - eventArgs[2].f32;
+                       if(offset > 0.968){
+                          m_swiperNodeDelegate->onPageSelected(this->m_targetIndex);
+                       }
+                       if(offset > 1){
+                          offset = 1;
+                       }
+                      LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_CONTENT_DID_SCROLL left selectedIndex:" << selectedIndex << " offset:" << offset ;
+                      facebook::react::RNCViewPagerEventEmitter::OnPageScroll m_onPageScroll = {
+                       selectedIndex,offset};                    
+                      m_swiperNodeDelegate->onPageScroll(m_onPageScroll);
+                  }
+             }
+           
         } 
     }
 

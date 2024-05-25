@@ -37,9 +37,9 @@ namespace rnoh {
     
         double m_pageIndex;
     
-        bool m_scrollEnabled;
+        bool m_scrollEnabled = false;
     
-        bool m_nativeLock;
+        bool m_nativeLock = false;
 
         std::string m_keyboardDismissMode;
     

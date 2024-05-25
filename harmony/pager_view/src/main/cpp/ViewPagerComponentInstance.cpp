@@ -61,7 +61,6 @@ namespace rnoh {
          this->getLocalRootArkUINode().setDisableSwipe(!props->scrollEnabled);
          this->getLocalRootArkUINode().setLoop(false);
          this->getLocalRootArkUINode().setIndicator(false);
-         this->getLocalRootArkUINode().setDuration(100);
          this->getLocalRootArkUINode().setCachedCount(props->offscreenPageLimit);
          if(props->overdrag){
                this->getLocalRootArkUINode().setEffectMode("SPRING");
@@ -116,7 +115,6 @@ namespace rnoh {
             this->m_needSetProps = false;
             this->m_pageIndex = args[0].asInt();
             this->getLocalRootArkUINode().setIndex(this->m_pageIndex);
-            this->getLocalRootArkUINode().setDuration(0);
         }
     }
 
