@@ -51,6 +51,9 @@ namespace rnoh {
         }
     
         virtual void setKeyboardDismiss(){};
+    
+        
+        virtual void setGestureStatus(bool gestureStatus){};
     };
 
     class SwiperNode : public ArkUINode {

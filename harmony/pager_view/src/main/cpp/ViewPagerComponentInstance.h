@@ -44,6 +44,8 @@ namespace rnoh {
         std::string m_keyboardDismissMode;
     
         bool m_needSetProps = true;
+    
+        bool m_gestureStatus = false;
 
     public:
         ViewPagerComponentInstance(Context context);
@@ -75,5 +77,9 @@ namespace rnoh {
         void setKeyboardDismiss() override;
     
        void onNativeResponderBlockChange(bool isBlocked) override;
+    
+       void setGestureStatus(bool gestureStatus) override;
+    
+       bool isHandlingTouches() const override;
      };
 } // namespace rnoh

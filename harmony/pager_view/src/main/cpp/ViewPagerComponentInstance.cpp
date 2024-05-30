@@ -163,4 +163,15 @@ namespace rnoh {
         }
     }
 
+    void ViewPagerComponentInstance::setGestureStatus(bool gestureStatus) {
+        this->m_gestureStatus = gestureStatus;
+        LOG(INFO) << "ViewPagerComponentInstance::setGestureStatus:" << gestureStatus;
+    }
+
+    bool ViewPagerComponentInstance::isHandlingTouches() const {
+        LOG(INFO) << "ViewPagerComponentInstance::isHandlingTouches:" << this->m_gestureStatus;
+        return this->m_gestureStatus ? true : false;
+    }
+
+
 } // namespace rnoh/

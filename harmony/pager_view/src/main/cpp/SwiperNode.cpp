@@ -36,6 +36,7 @@ namespace rnoh {
         maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_ANIMATION_END,NODE_SWIPER_EVENT_ON_ANIMATION_END, this));
         maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_CHANGE, NODE_SWIPER_EVENT_ON_CHANGE,this));
         maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_CONTENT_DID_SCROLL, NODE_SWIPER_EVENT_ON_CONTENT_DID_SCROLL,this));
+        maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_GESTURE_SWIPE, NODE_SWIPER_EVENT_ON_GESTURE_SWIPE,this));
     }
 
 
@@ -44,6 +45,7 @@ namespace rnoh {
         NativeNodeApi::getInstance()->unregisterNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_ANIMATION_END);
         NativeNodeApi::getInstance()->unregisterNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_CHANGE);
         NativeNodeApi::getInstance()->unregisterNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_CONTENT_DID_SCROLL);
+        NativeNodeApi::getInstance()->unregisterNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_GESTURE_SWIPE);
     }
 
 
@@ -80,6 +82,7 @@ namespace rnoh {
                 facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged pageScrollStateChange = {
                       facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChangedPageScrollState::Idle};   
                 m_swiperNodeDelegate->onPageScrollStateChanged(pageScrollStateChange);
+                m_swiperNodeDelegate->setGestureStatus(false);
         }
         else if (eventType == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_CHANGE) {
                 LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_CHANGE: " << eventArgs[0].i32;
@@ -103,7 +106,7 @@ namespace rnoh {
                       if(selectedIndex >= 1){
                         selectedIndex=selectedIndex-1;
                       }
-                      if(offset < 0.0202){
+                      if(offset < 0.3){
                         m_swiperNodeDelegate->onPageSelected(this->m_targetIndex);
                       }
                       if(offset < 0){
@@ -119,7 +122,7 @@ namespace rnoh {
                           eventArgs[2].f32 = 0;
                        }
                        offset = 1 - eventArgs[2].f32;
-                       if(offset > 0.968){
+                       if(offset > 0.7){
                           m_swiperNodeDelegate->onPageSelected(this->m_targetIndex);
                        }
                        if(offset > 1){
@@ -131,8 +134,11 @@ namespace rnoh {
                       m_swiperNodeDelegate->onPageScroll(m_onPageScroll);
                   }
              }
-           
         } 
+        else if(eventType == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_GESTURE_SWIPE){
+             LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_GESTURE_SWIPE";
+             m_swiperNodeDelegate->setGestureStatus(true);
+        }
     }
 
     SwiperNode &SwiperNode::setIndex(int const &initialPage) {
