@@ -24,12 +24,15 @@
 
 #include "ViewPagerComponentInstance.h"
 #include "Props.h"
+#include <arkui/native_gesture.h>
+#include <arkui/native_interface.h>
 
 namespace rnoh {
 
     ViewPagerComponentInstance::ViewPagerComponentInstance(Context context)
         : CppComponentInstance(std::move(context)) {
         m_swiperNode.setSwiperNodeDelegate(this);
+        this->regsiterGestureEvent();
     }
 
     void ViewPagerComponentInstance::onChildInserted(ComponentInstance::Shared const &childComponentInstance, std::size_t index) {
@@ -95,26 +98,24 @@ namespace rnoh {
     void ViewPagerComponentInstance::handleCommand(std::string const &commandName, folly::dynamic const &args) {
         LOG(INFO) << "handleCommand-->commandName: " << commandName;
         if (commandName == "setScrollEnabledImperatively" && args.isArray() && args.size() == 1) {
-            LOG(INFO) << "handleCommand-->setScrollEnabledImperatively: " << args[0];
-            this->m_scrollEnabled=args[0].asBool();
-            this->getLocalRootArkUINode().setDisableSwipe(!args[0].asBool());
-            if(!args[0].asBool()){
-               facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged event = {
-                      facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChangedPageScrollState::Idle};
-               m_eventEmitter->onPageScrollStateChanged(event);
-            }
-        }
-        else if (commandName == "setPage" && args.isArray() && args.size() == 1){
-            LOG(INFO) << "handleCommand-->setPage: " << args[0];
-            this->m_needSetProps = false;
-            this->m_pageIndex = args[0].asInt();
-            this->getLocalRootArkUINode().setIndex(this->m_pageIndex);
-        }
-        else if (commandName == "setPageWithoutAnimation" && args.isArray() && args.size() == 1){
-            LOG(INFO) << "handleCommand-->setPageWithoutAnimation: " << args[0];
-            this->m_needSetProps = false;
-            this->m_pageIndex = args[0].asInt();
-            this->getLocalRootArkUINode().setIndex(this->m_pageIndex);
+             LOG(INFO) << "handleCommand-->setScrollEnabledImperatively: " << args[0];
+             this->m_scrollEnabled = args[0].asBool();
+             this->getLocalRootArkUINode().setDisableSwipe(!args[0].asBool());
+             if (!args[0].asBool()) {
+                   facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged event = {
+                       facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChangedPageScrollState::Idle};
+                   m_eventEmitter->onPageScrollStateChanged(event);
+             }
+        } else if (commandName == "setPage" && args.isArray() && args.size() == 1) {
+             this->m_clickTap = true;
+             LOG(INFO) << "handleCommand-->setPage: " << args[0];
+             this->m_needSetProps = false;
+             this->getLocalRootArkUINode().setIndex(args[0].asInt());
+        } else if (commandName == "setPageWithoutAnimation" && args.isArray() && args.size() == 1) {
+             LOG(INFO) << "handleCommand-->setPageWithoutAnimation: " << args[0];
+             this->m_needSetProps = false;
+             this->m_clickTap = true;
+             this->getLocalRootArkUINode().setIndex(args[0].asInt());
         }
     }
 
@@ -172,6 +173,38 @@ namespace rnoh {
         LOG(INFO) << "ViewPagerComponentInstance::isHandlingTouches:" << this->m_gestureStatus;
         return this->m_gestureStatus ? true : false;
     }
+
+    void ViewPagerComponentInstance::regsiterGestureEvent() {
+        LOG(INFO) << "ViewPagerComponentInstance::regsiterGestureEvent";
+        auto gestureApi = OH_ArkUI_QueryModuleInterfaceByName(ARKUI_NATIVE_GESTURE, "ArkUI_NativeGestureAPI_1");
+        auto swiperGestureApi = reinterpret_cast<ArkUI_NativeGestureAPI_1 *>(gestureApi);
+        auto swiperGestureRecognizer = swiperGestureApi->createPanGesture(1, GESTURE_DIRECTION_ALL, 50);
+        auto onPanActionCallBack = [](ArkUI_GestureEvent *event, void *extraParam) {
+            PanActionCallBack *panActionCallBack = (PanActionCallBack *)extraParam;
+            ArkUI_GestureEventActionType actionType = OH_ArkUI_GestureEvent_GetActionType(event);
+
+            if (actionType == GESTURE_EVENT_ACTION_UPDATE) {
+                LOG(INFO) << "ViewPagerComponentInstance::regsiterGestureEvent GESTURE_EVENT_ACTION_UPDATE";
+                panActionCallBack->swiperNodeDelegate->setGestureStatus(true);
+            } else if (actionType == GESTURE_EVENT_ACTION_END) {
+                LOG(INFO) << "ViewPagerComponentInstance::regsiterGestureEvent GESTURE_EVENT_ACTION_END";
+                panActionCallBack->swiperNodeDelegate->setGestureStatus(false);
+            }
+        };
+        PanActionCallBack *panActionCallBack = new PanActionCallBack{
+            .swiperNodeDelegate = this,
+        };
+        swiperGestureApi->setGestureEventTarget(swiperGestureRecognizer,
+                                                GESTURE_EVENT_ACTION_ACCEPT | GESTURE_EVENT_ACTION_UPDATE |
+                                                    GESTURE_EVENT_ACTION_END,
+                                                panActionCallBack, onPanActionCallBack);
+        swiperGestureApi->addGestureToNode(this->getLocalRootArkUINode().getArkUINodeHandle(), swiperGestureRecognizer,
+                                           PARALLEL, NORMAL_GESTURE_MASK);
+    }
+
+    bool ViewPagerComponentInstance::getClickTap() { return this->m_clickTap; }
+
+    void ViewPagerComponentInstance::setClickTap(bool clickTap) { this->m_clickTap = clickTap; }
 
 
 } // namespace rnoh/

@@ -47,6 +47,14 @@ namespace rnoh {
     
         bool m_gestureStatus = false;
 
+        bool m_clickTap = false;
+
+        bool m_gestureSwipe = false;
+
+        struct PanActionCallBack {
+            SwiperNodeDelegate *swiperNodeDelegate;
+        };
+
     public:
         ViewPagerComponentInstance(Context context);
 
@@ -81,5 +89,11 @@ namespace rnoh {
        void setGestureStatus(bool gestureStatus) override;
     
        bool isHandlingTouches() const override;
+
+       bool getClickTap() override;
+
+       void setClickTap(bool clickTap) override;
+    
+       void regsiterGestureEvent();
      };
 } // namespace rnoh
