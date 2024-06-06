@@ -71,13 +71,13 @@ namespace rnoh {
     void SwiperNode::onNodeEvent(ArkUI_NodeEventType eventType, EventArgs &eventArgs) {
         if (m_swiperNodeDelegate == nullptr)
             return;
-        LOG(INFO) << "onNodeEvent-->start";
+        DLOG(INFO) << "onNodeEvent-->start";
         if (eventType == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_ANIMATION_START) {
             this->m_interceptSendOffset = false;
             this->animationStart = std::chrono::high_resolution_clock::now();
             this->m_currentIndex = eventArgs[0].i32;
             this->m_targetIndex = eventArgs[1].i32;
-            LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_ANIMATION_START m_currentIndex:" << eventArgs[0].i32
+            DLOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_ANIMATION_START m_currentIndex:" << eventArgs[0].i32
                       << " m_targetIndex:" << this->m_targetIndex;
             m_swiperNodeDelegate->setKeyboardDismiss();
             facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged event = {
@@ -89,7 +89,7 @@ namespace rnoh {
             if (duration.count() < 0.1) {
                 this->m_interceptSendOffset = true;
             }
-            LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_ANIMATION_END: " << eventArgs[0].i32
+            DLOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_ANIMATION_END: " << eventArgs[0].i32
                       << " clock_diff:" << duration.count();
             facebook::react::RNCViewPagerEventEmitter::OnPageScroll m_onPageScroll = {
                 static_cast<double>(eventArgs[0].i32), 0};
@@ -99,7 +99,7 @@ namespace rnoh {
             m_swiperNodeDelegate->onPageScrollStateChanged(pageScrollStateChange);
             this->m_gestureSwipe = false;
         } else if (eventType == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_CHANGE) {
-            LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_CHANGE: " << eventArgs[0].i32;
+            DLOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_CHANGE: " << eventArgs[0].i32;
             if (!this->m_pageSelectNotify) {
                 m_swiperNodeDelegate->onPageSelected(eventArgs[0].i32);
                 facebook::react::RNCViewPagerEventEmitter::OnPageScroll m_onPageScroll = {
@@ -111,12 +111,12 @@ namespace rnoh {
             this->m_preOffset = this->OFFSET_DEFAULT_VALUE;
             this->m_pageSelectNotify = false;
         } else if (eventType == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_GESTURE_SWIPE) {
-            LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_GESTURE_SWIPE";
+            DLOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_GESTURE_SWIPE";
             m_swiperNodeDelegate->setClickTap(false);
             this->m_interceptSendOffset = false;
             this->m_gestureSwipe = true;
         } else if (eventType == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_CONTENT_DID_SCROLL) {
-            LOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_CONTENT_DID_SCROLL selectedIndex: " << eventArgs[0].i32
+            DLOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_CONTENT_DID_SCROLL selectedIndex: " << eventArgs[0].i32
                       << " index:" << eventArgs[1].i32 << " position:" << eventArgs[2].f32
                       << " m_interceptSendOffset:" << this->m_interceptSendOffset
                       << " getClickTap:" << m_swiperNodeDelegate->getClickTap();
