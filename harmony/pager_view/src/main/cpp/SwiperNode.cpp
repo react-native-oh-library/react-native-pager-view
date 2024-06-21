@@ -151,17 +151,14 @@ namespace rnoh {
                             m_swiperNodeDelegate->onPageScroll(m_onPageScroll);
                         }
                     } else {
-                        // 初次滑动记录选中的索引
                         if (this->m_firstSwipe) {
                             this->m_offsetCountIndex = selectedIndex;
                             this->m_firstSwipe = false;
                         }
                         this->m_offsetCount++;
-                        // 等于当前显示的索引时
                         if (((this->m_offsetCountIndex - 1) == index)) {
                             if (eventArgs[2].f32 <= 0) {
                                 offset = -eventArgs[2].f32;
-                                // 不等于初始值 并且小于上一个页面的值 则换页面
                                 static double preoffset = this->m_preOffset;
                                 if ((preoffset != this->OFFSET_DEFAULT_VALUE) && preoffset < offset) {
                                     this->m_offsetCountIndex--;
@@ -173,7 +170,6 @@ namespace rnoh {
                             } else {
                                 offset = 1 - eventArgs[2].f32;
                                 static double preoffset = this->m_preOffset;
-                                // 不等于初始值 并且小于上一个页面的值 则换页面
                                 if ((preoffset != this->OFFSET_DEFAULT_VALUE) && (preoffset < offset)) {
                                     this->m_offsetCountIndex--;
                                     if (this->m_offsetCountIndex <= 0) {
@@ -194,7 +190,6 @@ namespace rnoh {
                         }
                     }
                 }
-
                 else if (((m_swiperNodeDelegate->getClickTap() && this->m_currentIndex < this->m_targetIndex) &&
                           (index > selectedIndex)) ||
                          (!m_swiperNodeDelegate->getClickTap() && (index > selectedIndex))) // 左
@@ -219,20 +214,15 @@ namespace rnoh {
                             m_swiperNodeDelegate->onPageScroll(m_onPageScroll);
                         }
                     } else {
-
-                        // 初次滑动记录选中的索引
                         if (this->m_firstSwipe) {
                             this->m_offsetCountIndex = (this->m_targetIndex - selectedIndex);
                             this->m_offsetIndex = this->m_currentIndex;
                             this->m_firstSwipe = false;
                         }
                         this->m_offsetCount++;
-
                         if (this->m_offsetIndex + 1 == index) {
                             if (eventArgs[2].f32 <= 0) {
                                 offset = -eventArgs[2].f32;
-                                // 不等于初始值 并且小于上一个页面的值 则换页面
-                                // 静态防止类型判断出错
                                 static double preoffset = this->m_preOffset;
                                 if ((preoffset != this->OFFSET_DEFAULT_VALUE) && (preoffset - offset) > 0) {
                                     this->m_offsetIndex++;
@@ -241,7 +231,6 @@ namespace rnoh {
                             } else {
                                 offset = 1 - eventArgs[2].f32;
                                 static double preoffset = this->m_preOffset;
-                                // 不等于初始值 并且小于上一个页面的值 则换页面
                                 if ((preoffset != this->OFFSET_DEFAULT_VALUE) && (preoffset - offset) > 0) {
                                     this->m_offsetIndex++;
                                 }
