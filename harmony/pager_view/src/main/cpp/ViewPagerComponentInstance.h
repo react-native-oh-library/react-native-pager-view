@@ -37,11 +37,23 @@ namespace rnoh {
     
         double m_pageIndex;
     
-        bool m_scrollEnabled;
+        bool m_scrollEnabled = false;
     
-        bool m_nativeLock;
+        bool m_nativeLock = false;
 
         std::string m_keyboardDismissMode;
+    
+        bool m_needSetProps = true;
+    
+        bool m_gestureStatus = false;
+
+        bool m_clickTap = false;
+
+        bool m_gestureSwipe = false;
+
+        struct PanActionCallBack {
+            SwiperNodeDelegate *swiperNodeDelegate;
+        };
 
     public:
         ViewPagerComponentInstance(Context context);
@@ -73,5 +85,15 @@ namespace rnoh {
         void setKeyboardDismiss() override;
     
        void onNativeResponderBlockChange(bool isBlocked) override;
+    
+       void setGestureStatus(bool gestureStatus) override;
+    
+       bool isHandlingTouches() const override;
+
+       bool getClickTap() override;
+
+       void setClickTap(bool clickTap) override;
+    
+       void regsiterGestureEvent();
      };
 } // namespace rnoh

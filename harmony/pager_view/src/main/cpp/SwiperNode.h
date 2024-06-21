@@ -51,12 +51,34 @@ namespace rnoh {
         }
     
         virtual void setKeyboardDismiss(){};
+    
+        
+        virtual void setGestureStatus(bool gestureStatus){};
+
+        virtual void setClickTap(bool clickTap) {}
+    
+        virtual bool getClickTap() { return false; };
     };
 
     class SwiperNode : public ArkUINode {
     protected:
         SwiperNodeDelegate *m_swiperNodeDelegate;
         ArkUI_NodeHandle m_stackArkUINodeHandle;
+        double m_targetIndex = 0;
+        double m_offset = 0;
+        double m_currentIndex = 0;
+        bool m_crossoverJump = false;
+        int m_offsetCount = 0;
+        double m_offsetIndex = 0;
+        double m_offsetCountIndex = 0;
+        const int OFFSET_DEFAULT_VALUE = 3;
+        double m_preOffset = OFFSET_DEFAULT_VALUE;
+        bool m_firstSwipe = true;
+        bool m_gestureSwipe = false;
+        bool m_pageSelectNotify = false;
+        std::chrono::high_resolution_clock::time_point animationStart;
+        std::chrono::high_resolution_clock::time_point animationEnd;
+        bool m_interceptSendOffset = false;
     public:
         SwiperNode();
     
@@ -68,7 +90,7 @@ namespace rnoh {
 
         void removeChild(ArkUINode &child);
 
-        void onNodeEvent(ArkUI_NodeEvent *event) override;
+        void onNodeEvent(ArkUI_NodeEventType eventType, EventArgs& eventArgs) override;
 
         SwiperNode &setIndex(int const &initialPage);
     
