@@ -261,6 +261,13 @@ namespace rnoh {
         return *this;
     }
 
+    SwiperNode &SwiperNode::setIndexNoAnimation(int const &initialPage) {
+        ArkUI_NumberValue indexValue[] = {{.i32 = initialPage}};
+        ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
+        maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_SWIPER_INDEX, &indexItem));
+        return *this;
+    }
+
     SwiperNode &SwiperNode::setVertical(std::string const &orientation) {
         if (orientation.empty())
             return *this;

@@ -115,7 +115,7 @@ namespace rnoh {
              DLOG(INFO) << "handleCommand-->setPageWithoutAnimation: " << args[0];
              this->m_needSetProps = false;
              this->m_clickTap = true;
-             this->getLocalRootArkUINode().setIndex(args[0].asInt());
+             this->getLocalRootArkUINode().setIndexNoAnimation(args[0].asInt());
         }
     }
 
