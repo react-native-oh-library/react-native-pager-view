@@ -93,6 +93,8 @@ namespace rnoh {
         void onNodeEvent(ArkUI_NodeEventType eventType, EventArgs& eventArgs) override;
 
         SwiperNode &setIndex(int const &initialPage);
+
+        SwiperNode &setIndexNoAnimation(int const &initialPage);
     
         SwiperNode &setVertical(std::string const &orientation);
     
