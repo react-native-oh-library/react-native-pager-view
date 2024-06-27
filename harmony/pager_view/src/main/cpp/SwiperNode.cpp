@@ -78,7 +78,7 @@ namespace rnoh {
             this->m_currentIndex = eventArgs[0].i32;
             this->m_targetIndex = eventArgs[1].i32;
             DLOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_ANIMATION_START m_currentIndex:" << eventArgs[0].i32
-                      << " m_targetIndex:" << this->m_targetIndex;
+                       << " m_targetIndex:" << this->m_targetIndex;
             m_swiperNodeDelegate->setKeyboardDismiss();
             facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged event = {
                 facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChangedPageScrollState::Settling};
@@ -90,7 +90,7 @@ namespace rnoh {
                 this->m_interceptSendOffset = true;
             }
             DLOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_ANIMATION_END: " << eventArgs[0].i32
-                      << " clock_diff:" << duration.count();
+                       << " clock_diff:" << duration.count();
             facebook::react::RNCViewPagerEventEmitter::OnPageScroll m_onPageScroll = {
                 static_cast<double>(eventArgs[0].i32), 0};
             m_swiperNodeDelegate->onPageScroll(m_onPageScroll);
@@ -117,9 +117,9 @@ namespace rnoh {
             this->m_gestureSwipe = true;
         } else if (eventType == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_CONTENT_DID_SCROLL) {
             DLOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_CONTENT_DID_SCROLL selectedIndex: " << eventArgs[0].i32
-                      << " index:" << eventArgs[1].i32 << " position:" << eventArgs[2].f32
-                      << " m_interceptSendOffset:" << this->m_interceptSendOffset
-                      << " getClickTap:" << m_swiperNodeDelegate->getClickTap();
+                       << " index:" << eventArgs[1].i32 << " position:" << eventArgs[2].f32
+                       << " m_interceptSendOffset:" << this->m_interceptSendOffset
+                       << " getClickTap:" << m_swiperNodeDelegate->getClickTap();
             if (this->m_interceptSendOffset || !m_swiperNodeDelegate->getScrollEnabled() ||
                 m_swiperNodeDelegate->getNativeLock())
                 return;
@@ -281,7 +281,7 @@ namespace rnoh {
     SwiperNode &SwiperNode::setDirection(std::string const &layoutDirection) {
         if (layoutDirection.empty())
             return *this;
-        int layoutDirectionValue = (layoutDirection == "ltr") ? 1 : 0;
+        int layoutDirectionValue = (layoutDirection == "ltr") ? 0 : 1;
         ArkUI_NumberValue indexValue[] = {{.i32 = layoutDirectionValue}};
         ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
         maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_DIRECTION, &indexItem));
