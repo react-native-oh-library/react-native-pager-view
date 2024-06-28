@@ -110,7 +110,7 @@ namespace rnoh {
     
         SwiperNode &setLoop(bool const &loop);
     
-        SwiperNode &setDuration(int const &duration);
+        SwiperNode &setDuration(float const &duration);
     
         SwiperNode &setIndicator(bool const &indicator);
     
