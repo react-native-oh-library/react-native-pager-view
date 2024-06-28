@@ -65,6 +65,8 @@ namespace rnoh {
          this->getLocalRootArkUINode().setLoop(false);
          this->getLocalRootArkUINode().setIndicator(false);
          this->getLocalRootArkUINode().setCachedCount(props->offscreenPageLimit);
+         this->getLocalRootArkUINode().setCurve(ARKUI_CURVE_SMOOTH);
+         this->getLocalRootArkUINode().setDuration(400); 
          if(props->overdrag){
                this->getLocalRootArkUINode().setEffectMode("SPRING");
          }

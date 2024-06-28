@@ -348,8 +348,8 @@ namespace rnoh {
         return *this;
     }
 
-    SwiperNode &SwiperNode::setDuration(int const &duration) {
-        ArkUI_NumberValue indexValue[] = {{.i32 = duration}};
+    SwiperNode &SwiperNode::setDuration(float const &duration) {
+        ArkUI_NumberValue indexValue[] = {{.f32 = duration}};
         ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
         maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_SWIPER_DURATION, &indexItem));
         return *this;
