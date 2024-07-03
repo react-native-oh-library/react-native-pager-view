@@ -56,12 +56,21 @@ namespace rnoh {
 
     void SwiperNode::insertChild(ArkUINode &child, std::size_t index) {
         m_stackArkUINodeHandle = NativeNodeApi::getInstance()->createNode(ArkUI_NodeType::ARKUI_NODE_STACK);
-        NativeNodeApi::getInstance()->addChild(m_nodeHandle, m_stackArkUINodeHandle);
-        NativeNodeApi::getInstance()->insertChildAt(m_stackArkUINodeHandle, child.getArkUINodeHandle(), index);
+        maybeThrow(NativeNodeApi::getInstance()->addChild(m_nodeHandle, m_stackArkUINodeHandle));
+        m_nodeHandleMap[&child] = m_stackArkUINodeHandle;
+        maybeThrow(NativeNodeApi::getInstance()->insertChildAt(m_stackArkUINodeHandle, child.getArkUINodeHandle(), index));
     }
 
     void SwiperNode::removeChild(ArkUINode &child) {
-        maybeThrow(NativeNodeApi::getInstance()->removeChild(m_stackArkUINodeHandle, child.getArkUINodeHandle()));
+        if(m_nodeHandleMap.find(&child) != m_nodeHandleMap.end()){
+            ArkUI_NodeHandle stackNodeHandle = m_nodeHandleMap.find(&child)->second;
+            maybeThrow(NativeNodeApi::getInstance()->removeChild(m_nodeHandle, stackNodeHandle));
+            maybeThrow(NativeNodeApi::getInstance()->removeChild(stackNodeHandle, child.getArkUINodeHandle()));
+            m_nodeHandleMap.erase(&child);
+        }
+        else{
+            maybeThrow(NativeNodeApi::getInstance()->removeChild(m_stackArkUINodeHandle, child.getArkUINodeHandle()));
+        }
     }
 
     void SwiperNode::setSwiperNodeDelegate(SwiperNodeDelegate *swiperNodeDelegate) {

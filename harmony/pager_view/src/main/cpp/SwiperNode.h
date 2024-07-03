@@ -79,6 +79,7 @@ namespace rnoh {
         std::chrono::high_resolution_clock::time_point animationStart;
         std::chrono::high_resolution_clock::time_point animationEnd;
         bool m_interceptSendOffset = false;
+        std::map<void*,ArkUI_NodeHandle> m_nodeHandleMap;
     public:
         SwiperNode();
     
