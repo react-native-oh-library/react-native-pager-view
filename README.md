@@ -1,112 +1,52 @@
-# react-native-pager-view <img src="img/viewpager-logo.png" alt="ViewPager" width="24" height="24">
+<!-- {% raw %} -->
+> 模板版本：v0.2.2
 
-[![npm package](https://badge.fury.io/js/react-native-pager-view.svg)](https://badge.fury.io/js/react-native-pager-view)
-[![Lean Core Extracted](https://img.shields.io/badge/Lean%20Core-Extracted-brightgreen.svg)](https://github.com/facebook/react-native/issues/23313)
-[![License](https://img.shields.io/github/license/callstack/react-native-pager-view?color=blue)](https://github.com/callstack/react-native-pager-view/blob/master/LICENSE)
-
-[![Lint](https://github.com/callstack/react-native-pager-view/actions/workflows/main.yml/badge.svg)](https://github.com/callstack/react-native-pager-view/actions/workflows/main.yml)
-[![iOS Build](https://github.com/callstack/react-native-pager-view/actions/workflows/ios.yml/badge.svg)](https://github.com/callstack/react-native-pager-view/actions/workflows/ios.yml)
-[![Android Build](https://github.com/callstack/react-native-pager-view/actions/workflows/android.yml/badge.svg)](https://github.com/callstack/react-native-pager-view/actions/workflows/android.yml)
-
-This component allows the user to swipe left and right through pages of data. Under the hood it is using the native [Android ViewPager](https://developer.android.com/reference/android/support/v4/view/ViewPager) and the [iOS UIPageViewController](https://developer.apple.com/documentation/uikit/uipageviewcontroller) implementations. [See it in action!](https://github.com/callstack/react-native-pager-view#preview)
-
-<br/>
 <p align="center">
-  <img src="img/vp-carousel.gif" alt="ViewPager" width="300">
+  <h1 align="center"> <code>react-native-pager-view</code> </h1>
+</p>
+<p align="center">
+    <a href="https://github.com/callstack/react-native-pager-view">
+         <img src="https://img.shields.io/badge/platforms-android%20|%20ios%20|%20harmony%20-lightgrey.svg" alt="Supported platforms" />
+    </a>
+       <a href="https://github.com/callstack/react-native-pager-view/blob/master/LICENSE">
+        <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License" />
+    </a>
 </p>
 
-<br/>
+> [!tip] [Github 地址](https://github.com/react-native-oh-library/react-native-pager-view)
 
-## Versions
+## 安装与使用
 
-| 4.x        | 5.x and above |
-| ---------- | ------------- |
-| iOS        | iOS support   |
-| ViewPager1 | ViewPager2    |
+请到三方库的 Releases 发布地址查看配套的版本信息：[@react-native-oh-tpl/react-native-pager-view Releases](https://github.com/react-native-oh-library/react-native-pager-view/releases)，并下载适用版本的 tgz 包。
 
-## Migration
+进入到工程目录并输入以下命令：
 
-In version **6.x** support for `transitionStyle` property has been dropped. More information [here](https://github.com/callstack/react-native-pager-view/blob/master/MIGRATION.md).
+> [!TIP] # 处替换为 tgz 包的路径
 
-`"@react-native-community/viewpager"` library has been changed to `react-native-pager-view`. Here you can find more information, how to migrate pager view to the latest [version](https://github.com/callstack/react-native-pager-view/blob/master/MIGRATION.md)
+<!-- tabs:start -->
 
-## Getting started
+#### **npm**
 
-`yarn add react-native-pager-view`
-
-## Linking
-
-### >= 0.60
-
-Autolinking will just do the job.
-
-### < 0.60
-
-#### Mostly automatic
-
-`react-native link react-native-pager-view`
-
-#### Manual linking
-
-<details>
-<summary>Manually link the library on iOS</summary>
-</br>
-
-Follow the [instructions in the React Native documentation](https://facebook.github.io/react-native/img/linking-libraries-ios#manual-linking) to manually link the framework or link using [Cocoapods](https://cocoapods.org) by adding this to your `Podfile`:
-
-```ruby
-pod 'react-native-pager-view', :path => '../node_modules/react-native-pager-view'
+```bash
+npm install @react-native-oh-tpl/react-native-pager-view@file:#
 ```
 
-</details>
+#### **yarn**
 
-<details>
-<summary>Manually link the library on Android</summary>
-</br>
-Make the following changes:
-
-#### `android/settings.gradle`
-
-```groovy
-include ':react-native-pager-view'
-project(':react-native-pager-view').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-pager-view/android')
+```bash
+yarn add @react-native-oh-tpl/react-native-pager-view@file:#
 ```
 
-#### `android/app/build.gradle`
+<!-- tabs:end -->
 
-```groovy
-dependencies {
-   ...
-   implementation project(':react-native-pager-view')
-}
-```
+下面的代码展示了这个库的基本使用场景：
 
-#### `android/app/src/main/.../MainApplication.java`
-
-On top, where imports are:
-
-Add `import com.reactnativepagerview.PagerViewPackage;`
-
-Add the `PagerViewPackage` class to your list of exported packages.
-
-```java
-@Override
-protected List<ReactPackage> getPackages() {
-  return Arrays.<ReactPackage>asList(
-    new MainReactPackage(),
-    new PagerViewPackage()
-  );
-}
-```
-
-</details>
-
-## Usage
+> [!WARNING] 使用时 import 的库名不变。
 
 ```js
-import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import PagerView from 'react-native-pager-view';
+import React from "react";
+import { StyleSheet, View, Text } from "react-native";
+import PagerView from "react-native-pager-view";
 
 const MyPager = () => {
   return (
@@ -128,107 +68,203 @@ const styles = StyleSheet.create({
 });
 ```
 
-**Attention:** Note that you can only use `View` components as children of `PagerView` (cf. folder _/example_)
-. For Android if `View` has own children, set prop `collapsable` to false <https://reactnative.dev/docs/view#collapsable-android>, otherwise react-native might remove those children views and and its children will be rendered as separate pages
+## Link
 
-## Advanced usage
+目前 HarmonyOS 暂不支持 AutoLink，所以 Link 步骤需要手动配置。
 
-For advanced usage please take a look into our [example project](https://github.com/callstack/react-native-pager-view/blob/master/example/src/BasicPagerViewExample.tsx)
+首先需要使用 DevEco Studio 打开项目里的 HarmonyOS 工程 `harmony`
 
-## API
+### 引入原生端代码
 
-| Prop                                                                 |                                                                                                                             Description                                                                                                                             | Platform |
-| -------------------------------------------------------------------- | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :------: |
-| `initialPage`                                                        |                                                                                                            Index of initial page that should be selected                                                                                                            |   both   |
-| `scrollEnabled: boolean`                                             |                                                                                                            Should pager view scroll, when scroll enabled                                                                                                            |   both   |
-| `onPageScroll: (e: PageScrollEvent) => void`                         |                                                    Executed when transitioning between pages (ether because the animation for the requested page has changed or when the user is swiping/dragging between pages)                                                    |   both   |
-| `onPageScrollStateChanged: (e: PageScrollStateChangedEvent) => void` |                                                                                                      Function called when the page scrolling state has changed                                                                                                      |   both   |
-| `onPageSelected: (e: PageSelectedEvent) => void`                     |                                                                                      This callback will be called once the ViewPager finishes navigating to the selected page                                                                                       |   both   |
-| `pageMargin: number`                                                 |                                                                                                                Blank space to be shown between pages                                                                                                                |   both   |
-| `keyboardDismissMode: ('none' / 'on-drag')`                          |                                                                                                Determines whether the keyboard gets dismissed in response to a drag                                                                                                 |   both   |
-| `orientation: Orientation`                                           |                                                                                       Set `horizontal` or `vertical` scrolling orientation (it does **not** work dynamically)                                                                                       |   both   |
-| `overScrollMode: OverScrollMode`                                      |                                                                              Used to override default value of overScroll mode. Can be `auto`, `always` or `never`. Defaults to `auto`                                                                              | Android  |
-| `offscreenPageLimit: number`                                         | Set the number of pages that should be retained to either side of the currently visible page(s). Pages beyond this limit will be recreated from the adapter when needed. Defaults to RecyclerView's caching strategy. The given value must either be larger than 0. | Android  |
-| `overdrag: boolean`                                                  |                                                                                   Allows for overscrolling after reaching the end or very beginning or pages. Defaults to `false`                                                                                   |   iOS    |
-| `layoutDirection: ('ltr' / 'rtl' / 'locale')`                        |                                                      Specifies layout direction. Use `ltr` or `rtl` to set explicitly or `locale` to deduce from the default language script of a locale. Defaults to `locale`                                                      |   both   |
+目前有两种方法：
 
-| Method                                     |                                                                                                         Description                                                                                                          | Platform |
-| ------------------------------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :------: |
-| `setPage(index: number)`                   |                                                                      Function to scroll to a specific page in the PagerView. Invalid index is ignored.                                                                       |   both   |
-| `setPageWithoutAnimation(index: number)`   |                                                                      Function to scroll to a specific page in the PagerView. Invalid index is ignored.                                                                       |   both   |
-| `setScrollEnabled(scrollEnabled: boolean)` | A helper function to enable/disable scroll imperatively. The recommended way is using the scrollEnabled prop, however, there might be a case where a imperative solution is more useful (e.g. for not blocking an animation) |   both   |
+1. 通过 har 包引入（在 IDE 完善相关功能后该方法会被遗弃，目前首选此方法）；
+2. 直接链接源码。
 
-## Contributing
+方法一：通过 har 包引入
 
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
+> [!TIP] har 包位于三方库安装路径的 `harmony` 文件夹下。
 
-## Known Issues
+打开 `entry/oh-package.json5`，添加以下依赖
 
-- `flex:1` does not work for child views, please use `width: '100%', height: '100%'` [instead](https://github.com/callstack/react-native-pager-view/issues/186#issuecomment-675320732)
+```json
+"dependencies": {
+    "@rnoh/react-native-openharmony": "file:../react_native_openharmony",
 
-- [iOS]: In case of `UIViewControllerHierarchyInconsistency` error, please use below fix:
-
-```
-requestAnimationFrame(() => refPagerView.current?.setPage(index));
+    "@react-native-oh-tpl/react-native-pager-view": "file:../../node_modules/@react-native-oh-tpl/react-native-pager-view/harmony/pager_view.har"
+  }
 ```
 
-## Preview
+点击右上角的 `sync` 按钮
 
-### Android
+或者在终端执行：
 
-|                            horizontal                             |                                  vertical                                  |
-| :---------------------------------------------------------------: | :------------------------------------------------------------------------: |
-| <img src="img/android-viewpager.gif" alt="ViewPager" width="325"> | <img src="img/android-viewpager-vertical.gif" alt="ViewPager" width="325"> |
+```bash
+cd entry
+ohpm install
+```
 
-### iOS
+方法二：直接链接源码
 
-|                              horizontal                              |                                vertical                                |
-| :------------------------------------------------------------------: | :--------------------------------------------------------------------: |
-| <img src="img/ios-viewpager-scroll.gif" alt="ViewPager" width="325"> | <img src="img/ios-viewpager-vertical.gif" alt="ViewPager" width="325"> |
+> [!TIP] 如需使用直接链接源码，请参考[直接链接源码说明](/zh-cn/link-source-code.md)
 
-## Reanimated onPageScroll handler
+### 配置 CMakeLists 和引入 ViewPagerPackage
 
-An example can be found [here](https://github.com/callstack/react-native-pager-view/blob/master/example/src/ReanimatedOnPageScrollExample.tsx)
+打开 `entry/src/main/cpp/CMakeLists.txt`，添加：
 
-#### Instructions
+```diff
+project(rnapp)
+cmake_minimum_required(VERSION 3.4.1)
+set(CMAKE_SKIP_BUILD_RPATH TRUE)
+set(RNOH_APP_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+set(NODE_MODULES "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../node_modules")
++ set(OH_MODULES "${CMAKE_CURRENT_SOURCE_DIR}/../../../oh_modules")
+set(RNOH_CPP_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../../../../react-native-harmony/harmony/cpp")
+set(LOG_VERBOSITY_LEVEL 1)
+set(CMAKE_ASM_FLAGS "-Wno-error=unused-command-line-argument -Qunused-arguments")
+set(CMAKE_CXX_FLAGS "-fstack-protector-strong -Wl,-z,relro,-z,now,-z,noexecstack -s -fPIE -pie")
+set(WITH_HITRACE_SYSTRACE 1) # for other CMakeLists.txt files to use
+add_compile_definitions(WITH_HITRACE_SYSTRACE)
 
-To attach reanimated handler with `onPageScroll` follow the below steps.
+add_subdirectory("${RNOH_CPP_DIR}" ./rn)
 
-```jsx
-// 1. Define the handler
-function usePageScrollHandler(handlers, dependencies) {
-  const { context, doDependenciesDiffer } = useHandler(handlers, dependencies);
-  const subscribeForEvents = ['onPageScroll'];
+# RNOH_BEGIN: add_package_subdirectories
+add_subdirectory("../../../../sample_package/src/main/cpp" ./sample-package)
++ add_subdirectory("${OH_MODULES}/@react-native-oh-tpl/react-native-pager-view/src/main/cpp" ./pager_view)
+# RNOH_END: add_package_subdirectories
 
-  return useEvent(
-    (event) => {
-      'worklet';
-      const { onPageScroll } = handlers;
-      if (onPageScroll && event.eventName.endsWith('onPageScroll')) {
-        onPageScroll(event, context);
-      }
-    },
-    subscribeForEvents,
-    doDependenciesDiffer
-  );
+add_library(rnoh_app SHARED
+    "./PackageProvider.cpp"
+    "${RNOH_CPP_DIR}/RNOHAppNapiBridge.cpp"
+)
+
+target_link_libraries(rnoh_app PUBLIC rnoh)
+
+# RNOH_BEGIN: link_packages
+target_link_libraries(rnoh_app PUBLIC rnoh_sample_package)
++ target_link_libraries(rnoh_app PUBLIC rnoh_pager_view )
+# RNOH_END: link_packages
+```
+
+打开 `entry/src/main/cpp/PackageProvider.cpp`，添加：
+
+```diff
+#include "RNOH/PackageProvider.h"
+#include "SamplePackage.h"
++ #include "ViewPagerPackage.h"
+
+using namespace rnoh;
+
+std::vector<std::shared_ptr<Package>> PackageProvider::getPackages(Package::Context ctx) {
+    return {
+      std::make_shared<SamplePackage>(ctx),
++     std::make_shared<ViewPagerPackage>(ctx)
+    };
 }
-
-// 2. Attach the event handler
-import PagerView from 'react-native-pager-view';
-import Animated from 'react-native-reanimated';
-const AnimatedPagerView = Animated.createAnimatedComponent(PagerView);
-
-const pageScrollHandler = usePageScrollHandler({
-  onPageScroll: (e) => {
-    'worklet';
-    offset.value = e.offset;
-    console.log(e.offset, e.position);
-  },
-});
-
-<AnimatedPagerView onPageScroll={pageScrollHandler} />;
 ```
 
-## License
+### 在 ArkTs 侧引入 RNCViewPager 组件
 
-MIT
+> [!WARNING] Deprecated！该库已接入 CAPI。
+
+找到 **function buildCustomComponent()**，一般位于 `entry/src/main/ets/pages/index.ets` 或 `entry/src/main/ets/rn/LoadBundle.ets`，添加：
+
+```diff
++ import { RNCViewPager, PAGER_VIEW_TYPE } from "@react-native-oh-tpl/react-native-pager-view"
+
+@Builder
+function buildCustomComponent(ctx: ComponentBuilderContext) {
+  if (ctx.componentName === SAMPLE_VIEW_TYPE) {
+    SampleView({
+      ctx: ctx.rnComponentContext,
+      tag: ctx.tag,
+      buildCustomComponent: buildCustomComponent
+    })
+  }
++ else if (ctx.componentName === PAGER_VIEW_TYPE) {
++   RNCViewPager({
++     ctx: ctx.rnComponentContext,
++     tag: ctx.tag,
++     buildCustomComponent: buildCustomComponent
++   })
++ }
+ ...
+}
+...
+```
+
+
+### 在 ArkTs 侧引入 ViewPagerPackage
+
+打开 `entry/src/main/ets/RNPackagesFactory.ts`，添加：
+
+```diff
+...
++ import { ViewPagerPackage } from '@react-native-oh-tpl/react-native-pager-view/ts';
+
+export function createRNPackages(ctx: RNPackageContext): RNPackage[] {
+  return [
+    new SamplePackage(ctx),
++   new ViewPagerPackage(ctx)
+  ];
+}
+```
+
+
+
+### 运行
+
+点击右上角的 `sync` 按钮
+
+或者在终端执行：
+
+```bash
+cd entry
+ohpm install
+```
+
+然后编译、运行即可。
+
+## 约束与限制
+
+## 兼容性
+
+要使用此库，需要使用正确的 React-Native 和 RNOH 版本。另外，还需要使用配套的 DevEco Studio 和 手机 ROM。
+
+请到三方库相应的 Releases 发布地址查看 Release 配套的版本信息：[@react-native-oh-tpl/react-native-pager-view Releases](https://github.com/react-native-oh-library/react-native-pager-view/releases)
+
+## 属性
+
+> [!tip] " HarmonyOS 支持"列为 yes 的 API 表示支持 HarmonyOS 平台，并且效果对标"原库平台"列中的 ios 或 android 的效果。
+
+> [!tip] "HarmonyOS Support"列为 yes 表示 HarmonyOS 平台支持该属性；no 则表示不支持；partially 表示部分支持。使用方法跨平台一致，效果对标 iOS 或 Android 的效果。
+
+| Name                                     | Description                                                                                                                                                                                                                                                         | Type                           | Required | Platform     | HarmonyOS Support          |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ | -------- | ------------ | -------------------------- |
+| initialPage                              | Index of initial page that should be selected                                                                                                                                                                                                                       | number                         | 是       | ios，android | yes                        |
+| scrollEnabled                            | Should pager view scroll, when scroll enabled                                                                                                                                                                                                                       | bool                           | 是       | ios，android | yes                        |
+| onPageScroll                             | Executed when transitioning between pages (ether because the animation for the requested page has changed or when the user is swiping/dragging between pages)                                                                                                       | function                       | 否       | ios，android | yes                        |
+| onPageScrollStateChanged                 | Function called when the page scrolling state has changed                                                                                                                                                                                                           | function                       | 否       | ios，android | yes                        |
+| onPageSelected                           | This callback will be called once the ViewPager finishes navigating to the selected page                                                                                                                                                                            | function                       | 否       | ios，android | yes                        |
+| pageMargin                               | Blank space to be shown between pages                                                                                                                                                                                                                               | number （取值范围:0~屏幕宽度） | 否       | ios，android | 仅支持取 0-368（屏幕宽度） |
+| keyboardDismissMode                      | Determines whether the keyboard gets dismissed in response to a drag                                                                                                                                                                                                | one of 'none' ,'on-drag'       | 否       | ios,android  | yes                        |
+| orientation                              | Set horizontal or vertical scrolling orientation (it does not work dynamically)                                                                                                                                                                                     | one of horizontal vertical     | 否       | ios，android | yes                        |
+| overScrollMode                           | Used to override default value of overScroll mode. Can be auto, always or never. Defaults to auto                                                                                                                                                                   | one of auto, always ,never     | 否       | android      | yes                        |
+| offscreenPageLimit                       | Set the number of pages that should be retained to either side of the currently visible page(s). Pages beyond this limit will be recreated from the adapter when needed. Defaults to RecyclerView's caching strategy. The given value must either be larger than 0. | number                         | 否       | android      | yes                         |
+| overdrag                                 | Allows for overscrolling after reaching the end or very beginning or pages. Defaults to false                                                                                                                                                                       | bool                           | 否       | ios          | yes                        |
+| layoutDirection                          | Specifies layout direction. Use ltr or rtl to set explicitly or locale to deduce from the default language script of a locale. Defaults to locale                                                                                                                   | string                         | 否       | android,ios  | yes                        |
+| setPage(index: number)                   | Function to scroll to a specific page in the PagerView. Invalid index is ignored.                                                                                                                                                                                   | function                       | 否       | android,ios  | yes                        |
+| setPageWithoutAnimation(index: number)   | Function to scroll to a specific page in the PagerView. Invalid index is ignored.                                                                                                                                                                                   | function                       | 否       | android,ios  | yes                        |
+| setScrollEnabled(scrollEnabled: boolean) | FA helper function to enable/disable scroll imperatively. The recommended way is using the scrollEnabled prop, however, there might be a case where a imperative solution is more useful (e.g. for not blocking an animation)                                       | function                       | 否       | android,ios  | yes                        |
+
+## 遗留问题
+
+- [x] offscreenPageLimit 未实现 HarmonyOS 化[issue#7](https://github.com/react-native-oh-library/react-native-pager-view/issues/7)
+
+## 其他
+
+## 开源协议
+
+本项目基于 [The MIT License (MIT)](https://github.com/react-native-oh-library/react-native-pager-view/blob/harmony/LICENSE) ，请自由地享受和参与开源。
+
+<!-- {% endraw %} -->
