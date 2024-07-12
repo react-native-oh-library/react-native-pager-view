@@ -57,7 +57,7 @@ namespace rnoh {
          this->m_scrollEnabled = props->scrollEnabled;
          this->m_pageIndex = props->initialPage;
          this->m_keyboardDismissMode = props->keyboardDismissMode;
-         this->getLocalRootArkUINode().setIndex(props->initialPage);
+         this->getLocalRootArkUINode().setIndexNoAnimation(props->initialPage);
          this->getLocalRootArkUINode().setVertical(props->orientation);
          this->getLocalRootArkUINode().setDirection(props->layoutDirection);
          this->getLocalRootArkUINode().setItemSpace(props->pageMargin);
