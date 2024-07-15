@@ -88,6 +88,8 @@ namespace rnoh {
             this->m_targetIndex = eventArgs[1].i32;
             DLOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_ANIMATION_START m_currentIndex:" << eventArgs[0].i32
                        << " m_targetIndex:" << this->m_targetIndex;
+            this->m_pageSelectNotify = true;
+            m_swiperNodeDelegate->onPageSelected(this->m_targetIndex);
             m_swiperNodeDelegate->setKeyboardDismiss();
             facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged event = {
                 facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChangedPageScrollState::Settling};
@@ -151,10 +153,6 @@ namespace rnoh {
                             if (selectedIndex >= 1) {
                                 selectedIndex = selectedIndex - 1;
                             }
-                            if (this->m_offsetCount > 3) {
-                                this->m_pageSelectNotify = true;
-                                m_swiperNodeDelegate->onPageSelected(this->m_targetIndex);
-                            }
                             if (offset < 0) {
                                 offset = 0;
                             }
@@ -192,10 +190,6 @@ namespace rnoh {
                             }
                             if (this->m_targetIndex == 1 && this->m_offsetCountIndex <= 1)
                                 return;
-                            if (this->m_offsetCount > 3) {
-                                this->m_pageSelectNotify = true;
-                                m_swiperNodeDelegate->onPageSelected(this->m_targetIndex);
-                            }
                             facebook::react::RNCViewPagerEventEmitter::OnPageScroll m_onPageScroll = {
                                 this->m_offsetCountIndex - 1, offset};
                             m_swiperNodeDelegate->onPageScroll(m_onPageScroll);
@@ -214,10 +208,6 @@ namespace rnoh {
                                 eventArgs[2].f32 = 0;
                             }
                             offset = 1 - eventArgs[2].f32;
-                            if (this->m_offsetCount > 3) {
-                                this->m_pageSelectNotify = true;
-                                m_swiperNodeDelegate->onPageSelected(this->m_targetIndex);
-                            }
                             if (offset > 1) {
                                 offset = 1;
                             }
@@ -251,10 +241,6 @@ namespace rnoh {
                             double offsetIndex = this->m_offsetIndex;
                             if (this->m_offsetCountIndex <= 0) {
                                 return;
-                            }
-                            if (this->m_offsetCount > 3) {
-                                this->m_pageSelectNotify = true;
-                                m_swiperNodeDelegate->onPageSelected(this->m_targetIndex);
                             }
                             facebook::react::RNCViewPagerEventEmitter::OnPageScroll m_onPageScroll = {offsetIndex,
                                                                                                       offset};
