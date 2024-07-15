@@ -124,6 +124,9 @@ namespace rnoh {
             m_swiperNodeDelegate->setClickTap(false);
             this->m_interceptSendOffset = false;
             this->m_gestureSwipe = true;
+            facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged event = {
+                facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChangedPageScrollState::Dragging};
+            m_swiperNodeDelegate->onPageScrollStateChanged(event);
         } else if (eventType == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_CONTENT_DID_SCROLL) {
             DLOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_CONTENT_DID_SCROLL selectedIndex: " << eventArgs[0].i32
                        << " index:" << eventArgs[1].i32 << " position:" << eventArgs[2].f32
