@@ -162,6 +162,7 @@ namespace rnoh {
         }
         else{
             this->m_nativeLock = false;
+            if(!this->m_scrollEnabled) return;
             this->getLocalRootArkUINode().setDisableSwipe(false);
         }
     }
