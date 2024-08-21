@@ -44,11 +44,7 @@ namespace rnoh {
     
         virtual bool getNativeLock(){
           return false;
-        }; 
-    
-        virtual int getLayoutMetricsWidth(){
-          return 0;   
-        }
+        };
     
         virtual void setKeyboardDismiss(){};
     

@@ -136,10 +136,6 @@ namespace rnoh {
         return result;
     }
 
-    int ViewPagerComponentInstance::getLayoutMetricsWidth(){
-       return this->m_layoutMetrics.frame.size.width;
-    }
-
     void ViewPagerComponentInstance::setKeyboardDismiss() {
         DLOG(INFO) << "ViewPagerComponentInstance::setKeyboardDismiss: " << this->m_keyboardDismissMode ;
         if (this->m_keyboardDismissMode != "on-drag") return;
@@ -174,7 +170,7 @@ namespace rnoh {
 
     bool ViewPagerComponentInstance::isHandlingTouches() const {
         DLOG(INFO) << "ViewPagerComponentInstance::isHandlingTouches:" << this->m_gestureStatus;
-        return this->m_gestureStatus ? true : false;
+        return this->m_gestureStatus;
     }
 
     void ViewPagerComponentInstance::regsiterGestureEvent() {
@@ -186,10 +182,7 @@ namespace rnoh {
             PanActionCallBack *panActionCallBack = (PanActionCallBack *)extraParam;
             ArkUI_GestureEventActionType actionType = OH_ArkUI_GestureEvent_GetActionType(event);
 
-            if (actionType == GESTURE_EVENT_ACTION_UPDATE) {
-                DLOG(INFO) << "ViewPagerComponentInstance::regsiterGestureEvent GESTURE_EVENT_ACTION_UPDATE";
-                panActionCallBack->swiperNodeDelegate->setGestureStatus(true);
-            } else if (actionType == GESTURE_EVENT_ACTION_END) {
+            if (actionType == GESTURE_EVENT_ACTION_END) {
                 DLOG(INFO) << "ViewPagerComponentInstance::regsiterGestureEvent GESTURE_EVENT_ACTION_END";
                 panActionCallBack->swiperNodeDelegate->setGestureStatus(false);
             }

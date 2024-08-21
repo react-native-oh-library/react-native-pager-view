@@ -126,6 +126,7 @@ namespace rnoh {
             m_swiperNodeDelegate->setClickTap(false);
             this->m_interceptSendOffset = false;
             this->m_gestureSwipe = true;
+            m_swiperNodeDelegate->setGestureStatus(this->m_gestureSwipe);
             facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged event = {
                 facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChangedPageScrollState::Dragging};
             m_swiperNodeDelegate->onPageScrollStateChanged(event);
