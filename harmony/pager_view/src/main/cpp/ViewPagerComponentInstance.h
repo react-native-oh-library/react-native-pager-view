@@ -80,8 +80,6 @@ namespace rnoh {
     
         bool getNativeLock() override;
     
-        int getLayoutMetricsWidth() override;
-    
         void setKeyboardDismiss() override;
     
        void onNativeResponderBlockChange(bool isBlocked) override;
