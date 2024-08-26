@@ -109,6 +109,7 @@ namespace rnoh {
                 facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChangedPageScrollState::Idle};
             m_swiperNodeDelegate->onPageScrollStateChanged(pageScrollStateChange);
             this->m_gestureSwipe = false;
+            m_swiperNodeDelegate->setGestureStatus(this->m_gestureSwipe);
         } else if (eventType == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_CHANGE) {
             DLOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_CHANGE: " << eventArgs[0].i32;
             if (!this->m_pageSelectNotify) {
