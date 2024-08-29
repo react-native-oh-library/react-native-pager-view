@@ -202,5 +202,29 @@ namespace rnoh {
 
     void ViewPagerComponentInstance::setClickTap(bool clickTap) { this->m_clickTap = clickTap; }
 
+    void ViewPagerComponentInstance::sendEventAnimationsPageScroll(
+        facebook::react::RNCViewPagerEventEmitter::OnPageScroll pageScroll) {
+        auto nativeAnimatedTurboModule = m_swiperNativeAnimatedTurboModule.lock();
+        if (nativeAnimatedTurboModule == nullptr) {
+            auto instance = m_deps->rnInstance.lock();
+            if (instance == nullptr) {
+                   return;
+            }
+            nativeAnimatedTurboModule =
+                instance->getTurboModule<NativeAnimatedTurboModule>("NativeAnimatedTurboModule");
+            m_swiperNativeAnimatedTurboModule = nativeAnimatedTurboModule;
+        }
+        if (nativeAnimatedTurboModule != nullptr) {
+            using folly::dynamic;
+            dynamic payload = dynamic::object("position", pageScroll.position)("offset", pageScroll.offset);
+            nativeAnimatedTurboModule->handleComponentEvent(m_tag, "onPageScroll",payload);
+            DLOG(INFO) << "ViewPagerComponentInstance::sendEventAnimationsPageScroll position " << pageScroll.position << " offset " << pageScroll.offset;
+        }
+    }
+
+
+    void ViewPagerComponentInstance::setNeedSetProps(bool needSetProps) {
+        this->m_needSetProps = needSetProps;
+    }
 
 } // namespace rnoh/
