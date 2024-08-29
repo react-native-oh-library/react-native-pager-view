@@ -105,6 +105,7 @@ namespace rnoh {
             facebook::react::RNCViewPagerEventEmitter::OnPageScroll m_onPageScroll = {
                 static_cast<double>(eventArgs[0].i32), 0};
             m_swiperNodeDelegate->onPageScroll(m_onPageScroll);
+            m_swiperNodeDelegate->sendEventAnimationsPageScroll(m_onPageScroll);
             facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged pageScrollStateChange = {
                 facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChangedPageScrollState::Idle};
             m_swiperNodeDelegate->onPageScrollStateChanged(pageScrollStateChange);
@@ -117,6 +118,7 @@ namespace rnoh {
                 facebook::react::RNCViewPagerEventEmitter::OnPageScroll m_onPageScroll = {
                     static_cast<double>(eventArgs[0].i32), 0};
                 m_swiperNodeDelegate->onPageScroll(m_onPageScroll);
+                m_swiperNodeDelegate->sendEventAnimationsPageScroll(m_onPageScroll);
             }
             this->m_offsetCount = 0;
             this->m_firstSwipe = true;
@@ -124,6 +126,7 @@ namespace rnoh {
             this->m_pageSelectNotify = false;
         } else if (eventType == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_GESTURE_SWIPE) {
             DLOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_GESTURE_SWIPE";
+            m_swiperNodeDelegate->setNeedSetProps(false);
             m_swiperNodeDelegate->setClickTap(false);
             this->m_interceptSendOffset = false;
             this->m_gestureSwipe = true;
@@ -161,6 +164,7 @@ namespace rnoh {
                             facebook::react::RNCViewPagerEventEmitter::OnPageScroll m_onPageScroll = {selectedIndex,
                                                                                                       offset};
                             m_swiperNodeDelegate->onPageScroll(m_onPageScroll);
+                            m_swiperNodeDelegate->sendEventAnimationsPageScroll(m_onPageScroll);
                         }
                     } else {
                         if (this->m_firstSwipe) {
@@ -195,6 +199,7 @@ namespace rnoh {
                             facebook::react::RNCViewPagerEventEmitter::OnPageScroll m_onPageScroll = {
                                 this->m_offsetCountIndex - 1, offset};
                             m_swiperNodeDelegate->onPageScroll(m_onPageScroll);
+                            m_swiperNodeDelegate->sendEventAnimationsPageScroll(m_onPageScroll);
                         }
                     }
                 }
@@ -216,6 +221,7 @@ namespace rnoh {
                             facebook::react::RNCViewPagerEventEmitter::OnPageScroll m_onPageScroll = {selectedIndex,
                                                                                                       offset};
                             m_swiperNodeDelegate->onPageScroll(m_onPageScroll);
+                            m_swiperNodeDelegate->sendEventAnimationsPageScroll(m_onPageScroll);
                         }
                     } else {
                         if (this->m_firstSwipe) {
@@ -247,6 +253,7 @@ namespace rnoh {
                             facebook::react::RNCViewPagerEventEmitter::OnPageScroll m_onPageScroll = {offsetIndex,
                                                                                                       offset};
                             m_swiperNodeDelegate->onPageScroll(m_onPageScroll);
+                            m_swiperNodeDelegate->sendEventAnimationsPageScroll(m_onPageScroll);
                         }
                     }
                 }

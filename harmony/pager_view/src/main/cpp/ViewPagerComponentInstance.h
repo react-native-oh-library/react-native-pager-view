@@ -29,6 +29,7 @@
 #include <folly/dynamic.h>
 #include<math.h>
 #include "ShadowNodes.h"
+#include "RNOHCorePackage/TurboModules/Animated/NativeAnimatedTurboModule.h"
 
 namespace rnoh {
     class ViewPagerComponentInstance : public CppComponentInstance<facebook::react::RNCViewPagerShadowNode>, public SwiperNodeDelegate {
@@ -55,6 +56,8 @@ namespace rnoh {
             SwiperNodeDelegate *swiperNodeDelegate;
         };
 
+        std::weak_ptr<NativeAnimatedTurboModule> m_swiperNativeAnimatedTurboModule{};
+    
     public:
         ViewPagerComponentInstance(Context context);
 
@@ -93,5 +96,9 @@ namespace rnoh {
        void setClickTap(bool clickTap) override;
     
        void regsiterGestureEvent();
+    
+       void sendEventAnimationsPageScroll(facebook::react::RNCViewPagerEventEmitter::OnPageScroll pageScroll) override;
+    
+       void setNeedSetProps(bool needSetProps) override;
      };
 } // namespace rnoh
