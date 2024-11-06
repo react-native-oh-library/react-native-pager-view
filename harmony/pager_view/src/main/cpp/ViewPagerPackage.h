@@ -23,74 +23,39 @@
  */
 #ifndef HARMONY_PAGERVIEW_SRC_MAIN_CPP_VIEWPAGERPACKAGE_H
 #define HARMONY_PAGERVIEW_SRC_MAIN_CPP_VIEWPAGERPACKAGE_H
-#include "RNOH/Package.h"
-#include "ComponentDescriptors.h"
-#include "ViewPagerJSIBinder.h"
-#include "ViewPagerNapiBinder.h"
-#include "ViewPagerEventEmitRequestHandler.h"
 #include "ViewPagerComponentInstance.h"
 #include "RNCViewPagerTurbomodule.h"
-
+#include "generated/RNOH/generated/BaseReactNativePagerViewPackage.h"
 using namespace rnoh;
 using namespace facebook;
-namespace rnoh{
+namespace rnoh {
 
-    class ViewPagerPackageComponentInstanceFactoryDelegate : public ComponentInstanceFactoryDelegate {
-    public:
-        using ComponentInstanceFactoryDelegate::ComponentInstanceFactoryDelegate;
-
-        ComponentInstance::Shared create(ComponentInstance::Context ctx) override {
-            if (ctx.componentName == "RNCViewPager") {
-                return std::make_shared<ViewPagerComponentInstance>(std::move(ctx));
-            }
-            return nullptr;
+class RNCViewPagerContextFactoryDelegate : public TurboModuleFactoryDelegate {
+public:
+    SharedTurboModule createTurboModule(Context ctx, const std::string &name) const override {
+        if (name == "RNCViewPagerContext") {
+            return std::make_shared<RNCViewPagerTurbomodule>(ctx, name);
         }
+        return nullptr;
+    };
+};
+
+class ViewPagerPackage : public BaseReactNativePagerViewPackage {
+    using Super = BaseReactNativePagerViewPackage;
+
+public:
+    ViewPagerPackage(Package::Context ctx) : Super(ctx) {}
+
+    ComponentInstance::Shared createComponentInstance(const ComponentInstance::Context &ctx) {
+        if (ctx.componentName == "RNCViewPager") {
+            return std::make_shared<ViewPagerComponentInstance>(ctx);
+        }
+        return nullptr;
     };
 
-
-    class RNCViewPagerContextFactoryDelegate : public TurboModuleFactoryDelegate {
-    public:
-        SharedTurboModule createTurboModule(Context ctx, const std::string &name) const override {
-            if (name == "RNCViewPagerContext") {
-                return std::make_shared<RNCViewPagerTurbomodule>(ctx, name);
-            }
-            return nullptr;
-        };
-    };
-
-  class ViewPagerPackage : public Package{
-    public:
-      ViewPagerPackage(Package::Context ctx) : Package(ctx){}
-
-      ComponentInstanceFactoryDelegate::Shared createComponentInstanceFactoryDelegate() override {
-            return std::make_shared<ViewPagerPackageComponentInstanceFactoryDelegate>();
-      }
-
-      std::unique_ptr<TurboModuleFactoryDelegate> createTurboModuleFactoryDelegate() override {
-            return std::make_unique<RNCViewPagerContextFactoryDelegate>();
-      }
-
-      std::vector<facebook::react::ComponentDescriptorProvider> createComponentDescriptorProviders() override
-      {
-        return {
-          facebook::react::concreteComponentDescriptorProvider<facebook::react::RNCViewPagerComponentDescriptor>(),
-        };
-      }
-
-      ComponentJSIBinderByString createComponentJSIBinderByName() override
-      {
-        return {{"RNCViewPager",std::make_shared<ViewPageJSIBinder>()}};
-      };
-
-      ComponentNapiBinderByString createComponentNapiBinderByName() override
-      {
-        return {{"RNCViewPager",std::make_shared<ViewPageNapiBinder>()}};
-      };
-
-      EventEmitRequestHandlers createEventEmitRequestHandlers() override
-      {
-        return {std::make_shared<ViewPagerEventEmitRequestHandler>()};
-      }
-  };
+    std::unique_ptr<TurboModuleFactoryDelegate> createTurboModuleFactoryDelegate() override {
+        return std::make_unique<RNCViewPagerContextFactoryDelegate>();
+    }
+};
 } // namespace rnoh
 #endif

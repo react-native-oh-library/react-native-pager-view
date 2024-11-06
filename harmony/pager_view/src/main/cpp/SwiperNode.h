@@ -25,7 +25,8 @@
 #pragma once
 
 #include "RNOH/arkui/ArkUINode.h"
-#include "EventEmitters.h"
+#include "generated/react/renderer/components/react_native_pager_view/EventEmitters.h"
+
 namespace rnoh {
 
     class SwiperNodeDelegate {
