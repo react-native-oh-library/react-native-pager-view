@@ -23,82 +23,82 @@
  */
 
 #pragma once
-#include "RNOH/CppComponentInstance.h"
 #include "SwiperNode.h"
-#include "EventEmitters.h"
 #include <folly/dynamic.h>
-#include<math.h>
-#include "ShadowNodes.h"
 #include "RNOHCorePackage/TurboModules/Animated/NativeAnimatedTurboModule.h"
+#include "generated/RNOH/generated/components/BaseRNCViewPagerComponentInstance.h"
 
 namespace rnoh {
-    class ViewPagerComponentInstance : public CppComponentInstance<facebook::react::RNCViewPagerShadowNode>, public SwiperNodeDelegate {
-    private:
-        SwiperNode m_swiperNode;
-    
-        double m_pageIndex;
-    
-        bool m_scrollEnabled = false;
-    
-        bool m_nativeLock = false;
+class ViewPagerComponentInstance : public BaseRNCViewPagerComponentInstance, public SwiperNodeDelegate {
 
-        std::string m_keyboardDismissMode;
-    
-        bool m_needSetProps = true;
-    
-        bool m_gestureStatus = false;
+    using super = BaseRNCViewPagerComponentInstance;
 
-        bool m_clickTap = false;
+private:
+    SwiperNode m_swiperNode;
 
-        bool m_gestureSwipe = false;
+    double m_pageIndex;
 
-        struct PanActionCallBack {
-            SwiperNodeDelegate *swiperNodeDelegate;
-        };
+    bool m_scrollEnabled = false;
 
-        std::weak_ptr<NativeAnimatedTurboModule> m_swiperNativeAnimatedTurboModule{};
-    
-    public:
-        ViewPagerComponentInstance(Context context);
+    bool m_nativeLock = false;
 
-        void onChildInserted(ComponentInstance::Shared const &childComponentInstance, std::size_t index) override;
+    std::string m_keyboardDismissMode;
 
-        void onChildRemoved(ComponentInstance::Shared const &childComponentInstance) override;
+    bool m_needSetProps = true;
 
-        SwiperNode &getLocalRootArkUINode() override;
+    bool m_gestureStatus = false;
 
-        void onPropsChanged(SharedConcreteProps const &props) override;
-    
-        void onPageSelected(double pageIndex) override;
-    
-        void onPageScroll(facebook::react::RNCViewPagerEventEmitter::OnPageScroll pageScroll) override;
-    
-        void onPageScrollStateChanged(facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged value) override;
+    bool m_clickTap = false;
 
-        void handleCommand(std::string const &commandName, folly::dynamic const &args) override;
-    
-        std::vector<TouchTarget::Shared> getTouchTargetChildren() override;
-    
-        bool getScrollEnabled() override;
-    
-        bool getNativeLock() override;
-    
-        void setKeyboardDismiss() override;
-    
-       void onNativeResponderBlockChange(bool isBlocked) override;
-    
-       void setGestureStatus(bool gestureStatus) override;
-    
-       bool isHandlingTouches() const override;
+    bool m_gestureSwipe = false;
 
-       bool getClickTap() override;
+    struct PanActionCallBack {
+        SwiperNodeDelegate *swiperNodeDelegate;
+    };
 
-       void setClickTap(bool clickTap) override;
-    
-       void regsiterGestureEvent();
-    
-       void sendEventAnimationsPageScroll(facebook::react::RNCViewPagerEventEmitter::OnPageScroll pageScroll) override;
-    
-       void setNeedSetProps(bool needSetProps) override;
-     };
+    std::weak_ptr<NativeAnimatedTurboModule> m_swiperNativeAnimatedTurboModule{};
+
+public:
+    ViewPagerComponentInstance(Context context);
+
+    void onChildInserted(ComponentInstance::Shared const &childComponentInstance, std::size_t index) override;
+
+    void onChildRemoved(ComponentInstance::Shared const &childComponentInstance) override;
+
+    SwiperNode &getLocalRootArkUINode() override;
+
+    void onPropsChanged(SharedConcreteProps const &props) override;
+
+    void onPageSelected(double pageIndex) override;
+
+    void onPageScroll(facebook::react::RNCViewPagerEventEmitter::OnPageScroll pageScroll) override;
+
+    void onPageScrollStateChanged(facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged value) override;
+
+    void handleCommand(std::string const &commandName, folly::dynamic const &args) override;
+
+    std::vector<TouchTarget::Shared> getTouchTargetChildren() override;
+
+    bool getScrollEnabled() override;
+
+    bool getNativeLock() override;
+
+    void setKeyboardDismiss() override;
+
+    void onNativeResponderBlockChange(bool isBlocked) override;
+
+    void setGestureStatus(bool gestureStatus) override;
+
+    bool isHandlingTouches() const override;
+
+    bool getClickTap() override;
+
+    void setClickTap(bool clickTap) override;
+
+    void regsiterGestureEvent();
+
+    void sendEventAnimationsPageScroll(facebook::react::RNCViewPagerEventEmitter::OnPageScroll pageScroll) override;
+
+    void setNeedSetProps(bool needSetProps) override;
+};
 } // namespace rnoh

@@ -23,9 +23,7 @@
  */
 
 #include "SwiperNode.h"
-#include <memory>
 #include "RNOH/arkui/NativeNodeApi.h"
-#include "glog/logging.h"
 
 namespace rnoh {
 
