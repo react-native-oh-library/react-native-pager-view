@@ -49,16 +49,18 @@ void ViewPagerComponentInstance::onChildRemoved(ComponentInstance::Shared const 
 
 void ViewPagerComponentInstance::onPropsChanged(SharedConcreteProps const &props) {
     super::onPropsChanged(props);
-    DLOG(INFO) << "ViewPagerComponentInstance::m_needSetProps: " << this->m_needSetProps
-               << " initialPage:" << props->initialPage;
-    if (!this->m_needSetProps) {
-        this->m_needSetProps = true;
-        return;
-    }
+    DLOG(INFO) << "ViewPagerComponentInstance::onPropsChanged: initialPage:" << props->initialPage 
+               << " scrollEnabled:" << props->scrollEnabled << " orientation:" << facebook::react::toString(props->orientation)
+               << " keyboardDismissMode:" << facebook::react::toString(props->keyboardDismissMode) << " layoutDirection:" << facebook::react::toString(props->layoutDirection)
+               << " pageMargin:" << props->pageMargin << " offscreenPageLimit:" << props->offscreenPageLimit
+               << " m_isInitialPage:" << this->m_isInitialPage;
     this->m_scrollEnabled = props->scrollEnabled;
     this->m_pageIndex = props->initialPage;
     this->m_keyboardDismissMode = facebook::react::toString(props->keyboardDismissMode);
-    this->getLocalRootArkUINode().setIndexNoAnimation(props->initialPage);
+    if(this->m_isInitialPage) {
+       this->getLocalRootArkUINode().setIndexNoAnimation(props->initialPage);
+       this->m_isInitialPage = false; 
+    }
     this->getLocalRootArkUINode().setVertical(facebook::react::toString(props->orientation));
     this->getLocalRootArkUINode().setDirection(facebook::react::toString(props->layoutDirection));
     this->getLocalRootArkUINode().setItemSpace(props->pageMargin);
@@ -111,11 +113,9 @@ void ViewPagerComponentInstance::handleCommand(std::string const &commandName, f
     } else if (commandName == "setPage" && args.isArray() && args.size() == 1) {
         this->m_clickTap = true;
         DLOG(INFO) << "handleCommand-->setPage: " << args[0];
-        this->m_needSetProps = false;
         this->getLocalRootArkUINode().setIndex(args[0].asInt());
     } else if (commandName == "setPageWithoutAnimation" && args.isArray() && args.size() == 1) {
         DLOG(INFO) << "handleCommand-->setPageWithoutAnimation: " << args[0];
-        this->m_needSetProps = false;
         this->m_clickTap = true;
         this->getLocalRootArkUINode().setIndexNoAnimation(args[0].asInt());
     }
@@ -217,8 +217,5 @@ void ViewPagerComponentInstance::sendEventAnimationsPageScroll(
                    << " offset " << pageScroll.offset;
     }
 }
-
-
-void ViewPagerComponentInstance::setNeedSetProps(bool needSetProps) { this->m_needSetProps = needSetProps; }
 
 } // namespace rnoh

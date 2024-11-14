@@ -43,14 +43,14 @@ private:
     bool m_nativeLock = false;
 
     std::string m_keyboardDismissMode;
-
-    bool m_needSetProps = true;
-
+    
     bool m_gestureStatus = false;
 
     bool m_clickTap = false;
 
     bool m_gestureSwipe = false;
+    
+    bool m_isInitialPage = true;
 
     struct PanActionCallBack {
         SwiperNodeDelegate *swiperNodeDelegate;
@@ -98,7 +98,5 @@ public:
     void regsiterGestureEvent();
 
     void sendEventAnimationsPageScroll(facebook::react::RNCViewPagerEventEmitter::OnPageScroll pageScroll) override;
-
-    void setNeedSetProps(bool needSetProps) override;
 };
 } // namespace rnoh
