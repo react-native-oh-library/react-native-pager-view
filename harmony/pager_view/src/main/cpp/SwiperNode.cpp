@@ -124,7 +124,6 @@ namespace rnoh {
             this->m_pageSelectNotify = false;
         } else if (eventType == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_GESTURE_SWIPE) {
             DLOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_GESTURE_SWIPE";
-            m_swiperNodeDelegate->setNeedSetProps(false);
             m_swiperNodeDelegate->setClickTap(false);
             this->m_interceptSendOffset = false;
             this->m_gestureSwipe = true;
