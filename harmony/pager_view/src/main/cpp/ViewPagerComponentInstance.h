@@ -98,5 +98,7 @@ public:
     void regsiterGestureEvent();
 
     void sendEventAnimationsPageScroll(facebook::react::RNCViewPagerEventEmitter::OnPageScroll pageScroll) override;
+    
+    void onSwiperAppear() override;
 };
 } // namespace rnoh

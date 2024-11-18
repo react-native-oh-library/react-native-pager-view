@@ -40,6 +40,8 @@ namespace rnoh {
                                                                    NODE_SWIPER_EVENT_ON_GESTURE_SWIPE, this));
         maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(
             m_nodeHandle, NODE_SWIPER_EVENT_ON_CONTENT_DID_SCROLL, NODE_SWIPER_EVENT_ON_CONTENT_DID_SCROLL, this));
+        maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(
+            m_nodeHandle, NODE_EVENT_ON_APPEAR, NODE_EVENT_ON_APPEAR, this));
     }
 
 
@@ -49,6 +51,7 @@ namespace rnoh {
         NativeNodeApi::getInstance()->unregisterNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_CHANGE);
         NativeNodeApi::getInstance()->unregisterNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_GESTURE_SWIPE);
         NativeNodeApi::getInstance()->unregisterNodeEvent(m_nodeHandle, NODE_SWIPER_EVENT_ON_CONTENT_DID_SCROLL);
+        NativeNodeApi::getInstance()->unregisterNodeEvent(m_nodeHandle, NODE_EVENT_ON_APPEAR);
     }
 
 
@@ -255,6 +258,9 @@ namespace rnoh {
                     }
                 }
             }
+        } else if(eventType == ArkUI_NodeEventType::NODE_EVENT_ON_APPEAR) {
+            DLOG(INFO) << "onNodeEvent-->NODE_EVENT_ON_APPEAR";
+            m_swiperNodeDelegate->onSwiperAppear();
         }
     }
 
