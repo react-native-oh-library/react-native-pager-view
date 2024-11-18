@@ -53,14 +53,10 @@ void ViewPagerComponentInstance::onPropsChanged(SharedConcreteProps const &props
                << " scrollEnabled:" << props->scrollEnabled << " orientation:" << facebook::react::toString(props->orientation)
                << " keyboardDismissMode:" << facebook::react::toString(props->keyboardDismissMode) << " layoutDirection:" << facebook::react::toString(props->layoutDirection)
                << " pageMargin:" << props->pageMargin << " offscreenPageLimit:" << props->offscreenPageLimit
-               << " m_isInitialPage:" << this->m_isInitialPage;
+               << " overdrag:" << props->overdrag << " overScrollMode:" << facebook::react::toString(props->overScrollMode);
     this->m_scrollEnabled = props->scrollEnabled;
     this->m_pageIndex = props->initialPage;
     this->m_keyboardDismissMode = facebook::react::toString(props->keyboardDismissMode);
-    if(this->m_isInitialPage) {
-       this->getLocalRootArkUINode().setIndexNoAnimation(props->initialPage);
-       this->m_isInitialPage = false; 
-    }
     this->getLocalRootArkUINode().setVertical(facebook::react::toString(props->orientation));
     this->getLocalRootArkUINode().setDirection(facebook::react::toString(props->layoutDirection));
     this->getLocalRootArkUINode().setItemSpace(props->pageMargin);
@@ -218,4 +214,11 @@ void ViewPagerComponentInstance::sendEventAnimationsPageScroll(
     }
 }
 
+void ViewPagerComponentInstance::onSwiperAppear(){
+    DLOG(INFO) << "ViewPagerComponentInstance onSwiperAppear m_isInitialPage:" << this->m_isInitialPage << " m_pageIndex:" << this->m_pageIndex;
+    if(this->m_isInitialPage) {
+       this->m_isInitialPage = false;
+       this->getLocalRootArkUINode().setIndexNoAnimation(this->m_pageIndex);
+    }
+}
 } // namespace rnoh

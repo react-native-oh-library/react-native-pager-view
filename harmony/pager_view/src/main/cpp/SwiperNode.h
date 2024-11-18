@@ -57,6 +57,8 @@ namespace rnoh {
         virtual bool getClickTap() { return false; };
     
         virtual void sendEventAnimationsPageScroll(facebook::react::RNCViewPagerEventEmitter::OnPageScroll pageScroll){};
+    
+        virtual void onSwiperAppear(){};
     };
 
     class SwiperNode : public ArkUINode {
