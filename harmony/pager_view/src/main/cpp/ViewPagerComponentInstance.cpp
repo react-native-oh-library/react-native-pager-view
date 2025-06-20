@@ -123,7 +123,7 @@ bool ViewPagerComponentInstance::getNativeLock() { return this->m_nativeLock; }
 
 std::vector<TouchTarget::Shared> ViewPagerComponentInstance::getTouchTargetChildren() {
     auto children = getChildren();
-    std::vector<TouchTarget::Shared> result(1);
+    std::vector<TouchTarget::Shared> result;
     result.push_back(children.at(m_pageIndex));
     return result;
 }
