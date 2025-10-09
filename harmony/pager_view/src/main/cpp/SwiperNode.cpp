@@ -90,7 +90,6 @@ namespace rnoh {
             DLOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_ANIMATION_START m_currentIndex:" << eventArgs[0].i32
                        << " m_targetIndex:" << this->m_targetIndex;
             this->m_pageSelectNotify = true;
-            m_swiperNodeDelegate->onPageSelected(this->m_targetIndex);
             m_swiperNodeDelegate->setKeyboardDismiss();
             facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChanged event = {
                 facebook::react::RNCViewPagerEventEmitter::OnPageScrollStateChangedPageScrollState::Settling};
@@ -114,8 +113,8 @@ namespace rnoh {
             m_swiperNodeDelegate->setGestureStatus(this->m_gestureSwipe);
         } else if (eventType == ArkUI_NodeEventType::NODE_SWIPER_EVENT_ON_CHANGE) {
             DLOG(INFO) << "onNodeEvent-->NODE_SWIPER_EVENT_ON_CHANGE: " << eventArgs[0].i32;
+            m_swiperNodeDelegate->onPageSelected(eventArgs[0].i32);
             if (!this->m_pageSelectNotify) {
-                m_swiperNodeDelegate->onPageSelected(eventArgs[0].i32);
                 facebook::react::RNCViewPagerEventEmitter::OnPageScroll m_onPageScroll = {
                     static_cast<double>(eventArgs[0].i32), 0};
                 m_swiperNodeDelegate->onPageScroll(m_onPageScroll);
