@@ -55,7 +55,7 @@ void ViewPagerComponentInstance::onPropsChanged(SharedConcreteProps const &props
                << " pageMargin:" << props->pageMargin << " offscreenPageLimit:" << props->offscreenPageLimit
                << " overdrag:" << props->overdrag << " overScrollMode:" << facebook::react::toString(props->overScrollMode);
     this->m_scrollEnabled = props->scrollEnabled;
-    this->m_pageIndex = props->initialPage;
+    if(this->m_isInitialPage) this->m_pageIndex = props->initialPage;
     this->m_keyboardDismissMode = facebook::react::toString(props->keyboardDismissMode);
     this->getLocalRootArkUINode().setVertical(facebook::react::toString(props->orientation));
     this->getLocalRootArkUINode().setDirection(facebook::react::toString(props->layoutDirection));
