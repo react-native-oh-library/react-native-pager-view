@@ -42,6 +42,10 @@ namespace rnoh {
             m_nodeHandle, NODE_SWIPER_EVENT_ON_CONTENT_DID_SCROLL, NODE_SWIPER_EVENT_ON_CONTENT_DID_SCROLL, this));
         maybeThrow(NativeNodeApi::getInstance()->registerNodeEvent(
             m_nodeHandle, NODE_EVENT_ON_APPEAR, NODE_EVENT_ON_APPEAR, this));
+        // 开启嵌套滑动时的父子联动响应
+        ArkUI_NumberValue indexValue[] = {{.i32 = m_swiperNestedScrollMode}};
+        ArkUI_AttributeItem indexItem = {indexValue, sizeof(indexValue) / sizeof(ArkUI_NumberValue)};
+        maybeThrow(NativeNodeApi::getInstance()->setAttribute(m_nodeHandle, NODE_SWIPER_NESTED_SCROLL, &indexItem));
     }
 
 

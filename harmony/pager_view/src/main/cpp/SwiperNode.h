@@ -26,6 +26,7 @@
 
 #include "RNOH/arkui/ArkUINode.h"
 #include "generated/react/renderer/components/react_native_pager_view/EventEmitters.h"
+#include <arkui/native_type.h>
 
 namespace rnoh {
 
@@ -81,6 +82,7 @@ namespace rnoh {
         std::chrono::high_resolution_clock::time_point animationEnd;
         bool m_interceptSendOffset = false;
         std::map<void*,ArkUI_NodeHandle> m_nodeHandleMap;
+        ArkUI_SwiperNestedScrollMode m_swiperNestedScrollMode = ARKUI_SWIPER_NESTED_SRCOLL_SELF_FIRST;
     public:
         SwiperNode();
     
